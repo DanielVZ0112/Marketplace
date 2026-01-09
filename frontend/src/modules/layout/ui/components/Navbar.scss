@@ -1,0 +1,10 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+
+  &__logo {
+    font-weight: 600;
+    letter-spacing: 3px;
+  }
+}
