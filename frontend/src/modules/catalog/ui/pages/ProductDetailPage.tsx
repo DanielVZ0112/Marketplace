@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useGetProduct } from "../../application/useGetProduct";
 import {
-  CircularProgress,
   Container,
   Typography,
   Box,
@@ -11,11 +10,14 @@ import {
 import { useCartStore } from "@/shared/stores/cart.store";
 import { useMemo, useState } from "react";
 import { VariantSelector } from "../components/VariantSelector";
+import { SkeletonLoader } from "@/shared/ui/components/SkeletonLoader";
+import { EmptyState } from "@/shared/ui/components/EmptyState";
 import type { ProductVariant } from "../../domain/ProductVariant";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: product, isLoading } = useGetProduct(id!);
+  const { data: product, isLoading, isError } = useGetProduct(id!);
   const addItem = useCartStore((state) => state.addItem);
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
@@ -29,15 +31,46 @@ export function ProductDetailPage() {
     return product?.image_url || product?.imageUrl || "/placeholder-image.jpg";
   }, [product, selectedVariant]);
 
+  const displayPrice = useMemo(() => {
+    if (selectedVariant?.price) {
+      // Convertir precio de variante a número
+      return typeof selectedVariant.price === 'string'
+        ? parseFloat(selectedVariant.price)
+        : Number(selectedVariant.price) || 0;
+    }
+    // Convertir precio del producto a número
+    if (product?.price) {
+      return typeof product.price === 'string'
+        ? parseFloat(product.price)
+        : Number(product.price) || 0;
+    }
+    return 0;
+  }, [product, selectedVariant]);
+
   const isOutOfStock = selectedVariant ? selectedVariant.stock <= 0 : false;
 
   const isAddDisabled =
     (hasVariants && !selectedVariant) || isOutOfStock;
 
+  if (isLoading) {
+    return (
+      <Container sx={{ py: 6 }}>
+        <SkeletonLoader count={1} variant="detail" />
+      </Container>
+    );
+  }
 
-  if (isLoading) return <CircularProgress />;
-
-  if (!product) return <Typography>Producto no encontrado</Typography>;
+  if (isError || !product) {
+    return (
+      <Container sx={{ py: 6 }}>
+        <EmptyState
+          title="Producto no encontrado"
+          description="El producto que buscas no existe o ha sido eliminado"
+          icon={<ErrorOutlineIcon sx={{ fontSize: 64, color: "error.main" }} />}
+        />
+      </Container>
+    );
+  }
 
   const handleAddToCart = () => {
     if (isAddDisabled) return;
@@ -58,8 +91,8 @@ export function ProductDetailPage() {
         <Box sx={{ flex: 2, minWidth: 300 }}>
           <Typography variant="h4">{product.name}</Typography>
 
-          <Typography variant="h6" sx={{ mt: 1 }}>
-            ${product.price}
+          <Typography variant="h6" sx={{ mt: 1 }} color="primary">
+            ${displayPrice.toFixed(2)}
           </Typography>
 
           <Typography sx={{ mt: 2 }}>{product.description}</Typography>

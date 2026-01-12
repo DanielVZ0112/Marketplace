@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AuthApiRepository } from "../infrastructure/AuthApiRepository";
 import { useSessionStore } from "@/shared/stores/session.store";
+import { queryKeys } from "@/shared/lib/query-keys";
 import type { LoginDto } from "../domain/LoginDto";
 
 /**
@@ -24,8 +25,8 @@ export function useLogin() {
       });
 
       // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: ["auth", "profile"] });
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
     },
   });
 }

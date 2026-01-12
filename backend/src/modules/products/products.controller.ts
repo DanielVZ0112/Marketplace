@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
 import { CreateProductUseCase } from './application/create-product.usecase';
 import { ListProductsUseCase } from './application/list-products.usecase';
 import { GetProductByIdUseCase } from './application/get-product-by-id.usecase';
 import { UpdateProductUseCase } from './application/update-product.usecase';
 import { CreateProductDto } from './application/dto/create-product.dto';
 import { UpdateProductDto } from './application/dto/update-product.dto';
+import { FilterProductsDto } from './application/dto/filter-products.dto';
 import { Public } from '../auth/infrastructure/decorators/public.decorator';
 import { HttpResponse } from '../../common/http/http-response';
 
@@ -25,8 +26,8 @@ export class ProductsController {
 
   @Get()
   @Public()
-  async findAll() {
-    const products = await this.listProductsUseCase.execute();
+  async findAll(@Query() filters: FilterProductsDto) {
+    const products = await this.listProductsUseCase.execute(filters);
     return HttpResponse.ok(products, 'Productos obtenidos exitosamente');
   }
 

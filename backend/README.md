@@ -84,37 +84,31 @@ npm run start:prod
 npm run start:debug
 ```
 
-## 📚 Documentación API
+## 📚 Documentación
 
-Importa la colección de Postman desde `docs/api/Marketplace-API.postman_collection.json`
+La documentación completa está disponible en la carpeta `docs/`:
+
+- 📖 [Documentación Principal](./docs/README.md) - Índice general
+- 🚀 [Guía de Inicio Rápido](./docs/getting-started.md) - Configuración e instalación
+- 🏗️ [Arquitectura](./docs/architecture.md) - Arquitectura Hexagonal y estructura
+- 📡 [Referencia de API](./docs/api/README.md) - Documentación completa de endpoints
+- 🔐 [Autenticación](./docs/authentication.md) - Sistema de autenticación JWT
+- 🗄️ [Base de Datos](./docs/database.md) - Migraciones, seeders y esquema
+- 🔄 [Flujos de Negocio](./docs/business-flows.md) - Flujos principales del sistema
+
+### Colección de Postman
+
+Importa la colección desde `docs/api/Marketplace-API.postman_collection.json` para probar todos los endpoints.
 
 **Base URL:** `http://localhost:3000/api`
 
-### Endpoints principales:
-
-- **Auth**: `/api/auth/login`, `/api/auth/profile`
-- **Products**: `/api/products` (CRUD completo)
-- **Categories**: `/api/categories` (CRUD completo)
-- **Customers**: `/api/customers` (CRUD completo)
-- **Users**: `/api/users` (CRUD completo)
-- **Orders**: `/api/orders` (CRUD completo)
-- **Product Variants**: `/api/product-variants` (CRUD completo)
-- **Payments**: `/api/payments` (Crear, procesar, listar pagos)
-
-### Flujo de Compra
-
-El sistema soporta **compra sin login (Guest Checkout)** y **compra con login**:
-
-1. **Sin Login**: `POST /api/customers` → `POST /api/orders` → `POST /api/payments` → `POST /api/payments/process`
-2. **Con Login**: Login opcional para recuperar datos automáticamente y ver historial
-
-Ver documentación completa en `FLUJO_AUTENTICACION_OPCIONAL.md`
-
 ## 🏗️ Estructura del Proyecto
+
+El proyecto sigue **Arquitectura Hexagonal** (Clean Architecture) con separación clara de responsabilidades:
 
 ```
 src/
-├── modules/              # Módulos de dominio (Clean Architecture)
+├── modules/              # Módulos de dominio
 │   ├── auth/            # Autenticación y autorización
 │   ├── products/        # Gestión de productos
 │   ├── categories/      # Gestión de categorías
@@ -122,43 +116,35 @@ src/
 │   ├── users/           # Gestión de usuarios
 │   ├── orders/          # Gestión de órdenes
 │   ├── product-variants/ # Variantes de productos
-│   └── payments/        # Gestión de pagos y procesamiento
+│   └── payments/        # Gestión de pagos
 │       ├── domain/      # Interfaces y contratos
 │       ├── application/ # Casos de uso y DTOs
-│       └── infrastructure/ # Implementaciones (repositorios)
+│       └── infrastructure/ # Implementaciones
 ├── database/            # Base de datos
 │   ├── entities/        # Entidades TypeORM
-│   ├── migrations/      # Migraciones de base de datos
+│   ├── migrations/      # Migraciones
 │   └── seeders/         # Datos iniciales
 ├── common/              # Utilidades compartidas
-│   ├── enums/          # Enumeraciones compartidas
-│   ├── filters/        # Filtros globales (excepciones)
-│   ├── http/           # Clases de respuesta HTTP
+│   ├── http/           # Respuestas HTTP estandarizadas
+│   ├── filters/        # Manejo global de excepciones
 │   └── interfaces/     # Interfaces compartidas
 ├── app.module.ts       # Módulo raíz
 └── main.ts             # Punto de entrada
 ```
 
+Ver documentación detallada en [Arquitectura](./docs/architecture.md)
+
 ## 🔐 Autenticación
 
-El sistema utiliza JWT (JSON Web Tokens) para autenticación **opcional**:
+El sistema utiliza JWT (JSON Web Tokens) para autenticación **opcional**, permitiendo tanto compras con login como Guest Checkout.
 
-1. **Login**: `POST /api/auth/login` - Obtiene un token JWT
-2. **Rutas protegidas**: Incluir header `Authorization: Bearer <token>`
-3. **Rutas públicas**: Marcadas con el decorador `@Public()`
-4. **Compra sin login**: Las compras pueden realizarse sin autenticación (Guest Checkout)
+**Características:**
+- ✅ Login opcional para compras
+- ✅ Rutas públicas marcadas con `@Public()`
+- ✅ Rutas protegidas requieren token JWT
+- ✅ Guard global para protección automática
 
-### Rutas Públicas (No requieren token):
-- `POST /api/customers` - Crear customer
-- `POST /api/orders` - Crear orden
-- `POST /api/payments` - Crear pago
-- `POST /api/payments/process` - Procesar pago
-- `GET /api/products` - Ver productos
-- `GET /api/categories` - Ver categorías
-- `POST /api/auth/login` - Login
-- `POST /api/users` - Registro
-
-Ver documentación completa en `FLUJO_AUTENTICACION_OPCIONAL.md`
+Ver documentación completa en [Autenticación](./docs/authentication.md)
 
 ## 🧪 Testing
 
@@ -191,12 +177,12 @@ npm run seed              # Ejecutar seeders
 
 El sistema incluye un módulo completo de pagos con simulación para pruebas:
 
-- **Crear pago**: `POST /api/payments` - Crea un pago asociado a una orden
-- **Procesar pago**: `POST /api/payments/process` - Procesa el pago y actualiza inventario
-- **Simulación**: Soporta simulación de éxito/fallo para pruebas
-- **Actualización automática**: Al confirmar pago exitoso, se actualiza el stock automáticamente
+- ✅ Crear y procesar pagos
+- ✅ Simulación de éxito/fallo para desarrollo
+- ✅ Actualización automática de inventario al confirmar pago
+- ✅ Soporte para múltiples métodos de pago
 
-Ver documentación en `src/modules/payments/README.md` y `src/modules/payments/SIMULACION_PAGOS.md`
+Ver detalles en [Flujos de Negocio](./docs/business-flows.md#-flujo-de-pagos)
 
 ## 🛠️ Tecnologías Utilizadas
 
