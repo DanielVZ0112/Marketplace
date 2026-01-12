@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsString,
   IsOptional,
+  IsUrl,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -26,4 +27,9 @@ export class CreateProductDto {
   @IsBoolean()
   @IsOptional()
   is_active?: boolean;
+
+  @IsString()
+  @IsUrl()
+  @IsOptional()
+  image_url?: string;
 }

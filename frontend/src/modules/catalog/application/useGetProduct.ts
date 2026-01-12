@@ -1,5 +1,10 @@
-// Hook para obtener un producto por ID
-export const useGetProduct = (id: string) => {
-  // TODO: Implementar con React Query
-  return {};
-};
+import { useQuery } from "@tanstack/react-query";
+import { CatalogApiRepository } from "../infrastructure/CatalogApiRepository";
+
+export function useGetProduct(id: string) {
+  return useQuery({
+    queryKey: ["product", id],
+    queryFn: () => CatalogApiRepository.getProductById(id),
+    enabled: !!id,
+  });
+}

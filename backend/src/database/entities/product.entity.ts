@@ -20,6 +20,9 @@ export class Product extends BaseEntity {
   @Column({ type: 'boolean', default: true })
   is_active: boolean;
 
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  image_url: string;
+
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({ name: 'category_id' })
   category: Category;

@@ -1,4 +1,4 @@
-import { IsNumber, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsNumber, IsNotEmpty, IsString, IsOptional, IsUrl } from 'class-validator';
 
 export class CreateProductVariantDto {
   @IsNumber()
@@ -20,5 +20,10 @@ export class CreateProductVariantDto {
   @IsString()
   @IsOptional()
   sku?: string;
+
+  @IsString()
+  @IsUrl()
+  @IsOptional()
+  image_url?: string;
 }
 

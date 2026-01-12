@@ -1,9 +1,17 @@
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
 export function HomePage() {
-    return (
-      <div style={{ padding: 40 }}>
-        <h1>New Collection</h1>
-        <p>Discover our new arrivals</p>
-      </div>
-    );
-  }
-  
+  const navigate = useNavigate();
+
+  return (
+    <div style={{ padding: 60 }}>
+      <h1>Nueva Colección</h1>
+      <p>Descubre nuestras nuevas llegadas</p>
+
+      <Button variant="contained" onClick={() => navigate("/catalog")}>
+        Ver catálogo
+      </Button>
+    </div>
+  );
+}

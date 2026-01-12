@@ -20,6 +20,9 @@ export class ProductVariant extends BaseEntity {
   @Column({ type: 'varchar', length: 100, nullable: true, unique: true })
   sku: string;
 
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  image_url: string;
+
   @ManyToOne(() => Product, (product) => product.variants)
   @JoinColumn({ name: 'product_id' })
   product: Product;

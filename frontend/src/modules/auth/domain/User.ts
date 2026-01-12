@@ -1,4 +1,8 @@
-// User domain entity
 export interface User {
-  // TODO: Definir estructura de usuario
+  id: number;
+  email: string;
+  is_active: boolean;
+  created_at?: string | Date;
+  updated_at?: string | Date;
+  customer?: import('@/modules/checkout/domain/Customer').Customer;
 }

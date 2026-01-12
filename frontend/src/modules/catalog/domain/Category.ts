@@ -1,4 +1,6 @@
-// Category domain entity
 export interface Category {
-  // TODO: Definir estructura de categoría
-}
+    id: number;
+    name: string;
+    slug: string;
+  }
+  
