@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckoutApiRepository } from "../infrastructure/CheckoutApiRepository";
+import { queryKeys } from "@/shared/lib/query-keys";
 import type { ProcessPaymentDto } from "../domain/CreatePayment";
 
 /**
@@ -13,9 +14,8 @@ export function useProcessPayment() {
       CheckoutApiRepository.processPayment(processPaymentData),
     onSuccess: () => {
       // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: ["payments"] });
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-      queryClient.invalidateQueries({ queryKey: ["products"] }); // Stock actualizado
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.products.all }); // Stock actualizado
     },
   });
 }

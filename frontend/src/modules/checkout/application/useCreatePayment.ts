@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckoutApiRepository } from "../infrastructure/CheckoutApiRepository";
+import { queryKeys } from "@/shared/lib/query-keys";
 import type { CreatePaymentDto } from "../domain/CreatePayment";
 
 /**
@@ -12,9 +13,8 @@ export function useCreatePayment() {
     mutationFn: (paymentData: CreatePaymentDto) =>
       CheckoutApiRepository.createPayment(paymentData),
     onSuccess: () => {
-      // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: ["payments"] });
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      // Invalidate queries related to orders
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
     },
   });
 }

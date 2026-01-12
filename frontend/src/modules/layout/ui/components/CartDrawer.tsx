@@ -8,14 +8,18 @@ import {
     ListItemText,
     Divider,
     ButtonGroup,
+    Button,
   } from "@mui/material";
   import { useCartStore } from "@/shared/stores/cart.store";
+  import { useNavigate } from "react-router-dom";
   import CloseIcon from "@mui/icons-material/Close";
   import DeleteIcon from "@mui/icons-material/Delete";
   import AddIcon from "@mui/icons-material/Add";
   import RemoveIcon from "@mui/icons-material/Remove";
+  import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
   
   export function CartDrawer() {
+    const navigate = useNavigate();
     const { 
       isOpen, 
       closeCart, 
@@ -26,6 +30,11 @@ import {
       getTotalItems,
       getTotalPrice 
     } = useCartStore();
+
+    const handleCheckout = () => {
+      closeCart();
+      navigate("/checkout");
+    };
   
     return (
       <Drawer anchor="right" open={isOpen} onClose={closeCart}>
@@ -115,10 +124,26 @@ import {
           </Box>
   
           <Divider sx={{ my: 1 }} />
-  
+
           {/* Footer */}
           <Box sx={{ mt: 1 }}>
-            <Typography variant="h6">Total: ${getTotalPrice().toFixed(2)}</Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+              <Typography variant="h6">Total:</Typography>
+              <Typography variant="h6" fontWeight="bold">
+                ${getTotalPrice().toFixed(2)}
+              </Typography>
+            </Box>
+            <Button
+              variant="contained"
+              fullWidth
+              size="large"
+              startIcon={<ShoppingCartCheckoutIcon />}
+              onClick={handleCheckout}
+              disabled={items.length === 0}
+              sx={{ mt: 1 }}
+            >
+              Proceder al Pago
+            </Button>
           </Box>
         </Box>
       </Drawer>

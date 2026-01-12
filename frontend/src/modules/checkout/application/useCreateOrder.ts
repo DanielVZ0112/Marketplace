@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckoutApiRepository } from "../infrastructure/CheckoutApiRepository";
+import { queryKeys } from "@/shared/lib/query-keys";
 import type { CreateOrderDto } from "../domain/CreateOrder";
 
 /**
@@ -12,8 +13,8 @@ export function useCreateOrder() {
     mutationFn: (orderData: CreateOrderDto) =>
       CheckoutApiRepository.createOrder(orderData),
     onSuccess: () => {
-      // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      // Invalidate queries related to orders
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
     },
   });
 }
