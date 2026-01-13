@@ -1,0 +1,51 @@
+@use '@/shared/styles/tokens' as *;
+
+.catalogPage {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-2xl;
+  padding: $spacing-2xl 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: 280px 1fr;
+    padding: $spacing-2xl $spacing-lg;
+  }
+  
+  &__sidebar {
+    display: none;
+    
+    @media (min-width: $breakpoint-lg) {
+      display: block;
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+  }
+  
+  &__content {
+    min-width: 0; // Para grid
+  }
+  
+  &__header {
+    margin-bottom: $spacing-xl;
+  }
+  
+  &__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: $color-black;
+    margin-bottom: $spacing-sm;
+    line-height: 1.2;
+  }
+  
+  &__count {
+    font-size: 14px;
+    color: $color-text-secondary;
+  }
+  
+  &__grid {
+    margin-bottom: $spacing-2xl;
+  }
+}

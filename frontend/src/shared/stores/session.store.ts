@@ -1,14 +1,17 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { User } from "@/modules/auth/domain/User";
+import type { Customer } from "@/modules/checkout/domain/Customer";
 
 interface SessionState {
   token: string | null;
   user: User | null;
+  customer: Customer | null;
   isAuthenticated: boolean;
 
   setToken: (token: string | null) => void;
   setUser: (user: User | null) => void;
+  setCustomer: (customer: Customer | null) => void;
   clearSession: () => void;
   initializeFromStorage: () => void;
 }
@@ -18,6 +21,7 @@ export const useSessionStore = create<SessionState>()(
     (set, get) => ({
       token: null,
       user: null,
+      customer: null,
       isAuthenticated: false,
 
       setToken: (token) => {
@@ -39,11 +43,17 @@ export const useSessionStore = create<SessionState>()(
           isAuthenticated: !!user,
         }),
 
+      setCustomer: (customer) =>
+        set({
+          customer,
+        }),
+
       clearSession: () => {
         localStorage.removeItem("token");
         set({
           token: null,
           user: null,
+          customer: null,
           isAuthenticated: false,
         });
       },
@@ -60,6 +70,7 @@ export const useSessionStore = create<SessionState>()(
       partialize: (state) => ({
         token: state.token,
         user: state.user,
+        customer: state.customer,
         isAuthenticated: state.isAuthenticated,
       }),
     }

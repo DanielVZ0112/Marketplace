@@ -5,7 +5,7 @@ import { useCartStore } from "@/shared/stores/cart.store";
 import { useSessionStore } from "@/shared/stores/session.store";
 import { useLogout } from "@/modules/auth/application/useLogout";
 import { useNavigate } from "react-router-dom";
-import "./Navbar.scss";
+import styles from "./navbar.module.scss";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -24,18 +24,17 @@ export function Navbar() {
   };
 
   return (
-    <AppBar position="sticky" color="transparent" elevation={0}>
-      <Toolbar className="navbar">
+    <AppBar position="sticky" color="transparent" elevation={0} className={styles.navbar}>
+      <Toolbar className={styles.navbar__container}>
         <Typography
-          className="navbar__logo"
+          className={styles.navbar__logo}
           variant="h5"
           onClick={() => navigate("/")}
-          sx={{ cursor: "pointer" }}
         >
-          MAISON
+          DS for You
         </Typography>
 
-        <div className="navbar__actions">
+        <div className={styles.navbar__actions}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {isAuthenticated ? (
               <>

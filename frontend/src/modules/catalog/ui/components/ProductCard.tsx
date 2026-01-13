@@ -1,11 +1,17 @@
-import { Card, CardContent, CardMedia, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import type { Product } from "../../domain/Product";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
+import noImage from "@/assets/no-image.jpg";
+import styles from "./product-card.module.scss";
 
 export function ProductCard({ product }: { product: Product }) {
   const navigate = useNavigate();
-  const imageUrl = product.image_url || product.imageUrl || '/placeholder-image.jpg';
+  
+  const imageUrl = useMemo(() => {
+    const url = product.image_url || product.imageUrl;
+    return url || noImage;
+  }, [product.image_url, product.imageUrl]);
   
   const priceDisplay = useMemo(() => {
     const productPrice = typeof product.price === 'string' 
@@ -36,25 +42,28 @@ export function ProductCard({ product }: { product: Product }) {
   }, [product]);
 
   return (
-    <Card 
-      sx={{ cursor: "pointer", height: "100%", display: "flex", flexDirection: "column" }}
+    <Box 
+      className={styles.productCard}
       onClick={() => navigate(`/catalog/${product.id}`)}
     >
-      <CardMedia
-        component="img"
-        height="260"
-        image={imageUrl}
-        alt={product.name}
-        sx={{ objectFit: 'cover' }}
-      />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="subtitle1" gutterBottom>
+      <Box className={styles.productCard__imageWrapper}>
+        <img
+          src={imageUrl}
+          alt={product.name}
+          className={styles.productCard__image}
+          onError={(e) => {
+            e.currentTarget.src = noImage;
+          }}
+        />
+      </Box>
+      <Box className={styles.productCard__content}>
+        <Typography className={styles.productCard__title}>
           {product.name}
         </Typography>
-        <Typography variant="body2" color="primary" fontWeight="medium">
+        <Typography className={styles.productCard__price}>
           {priceDisplay}
         </Typography>
-      </CardContent>
-    </Card>
+      </Box>
+    </Box>
   );
 }

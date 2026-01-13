@@ -14,6 +14,7 @@ import { SkeletonLoader } from "@/shared/ui/components/SkeletonLoader";
 import { EmptyState } from "@/shared/ui/components/EmptyState";
 import type { ProductVariant } from "../../domain/ProductVariant";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import noImage from "@/assets/no-image.jpg";
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -28,7 +29,7 @@ export function ProductDetailPage() {
     if (selectedVariant?.image_url || selectedVariant?.imageUrl) {
       return selectedVariant.image_url || selectedVariant.imageUrl;
     }
-    return product?.image_url || product?.imageUrl || "/placeholder-image.jpg";
+    return product?.image_url || product?.imageUrl || null;
   }, [product, selectedVariant]);
 
   const displayPrice = useMemo(() => {
@@ -82,9 +83,12 @@ export function ProductDetailPage() {
       <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
         <Box sx={{ flex: 1, minWidth: 300 }}>
           <img
-            src={currentImage ?? "/placeholder-image.jpg"}
+            src={currentImage || noImage}
             alt={product.name}
             style={{ width: "100%", objectFit: "cover", borderRadius: 8 }}
+            onError={(e) => {
+              e.currentTarget.src = noImage;
+            }}
           />
         </Box>
 
@@ -109,7 +113,7 @@ export function ProductDetailPage() {
 
           {hasVariants && !selectedVariant && (
             <Alert severity="info" sx={{ mt: 2 }}>
-              Selecciona una variante para continuar
+              Selecciona una talla para continuar
             </Alert>
           )}
 

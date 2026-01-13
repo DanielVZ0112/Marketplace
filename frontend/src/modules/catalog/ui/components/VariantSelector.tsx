@@ -20,7 +20,7 @@ export function VariantSelector({ variants, selectedVariant, onChange }: Props) 
   return (
     <Box sx={{ mt: 3 }}>
       <Typography variant="subtitle1" gutterBottom>
-        Selecciona una variante
+        Selecciona una talla
       </Typography>
 
       <ToggleButtonGroup

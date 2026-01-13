@@ -25,4 +25,9 @@ export const queryKeys = {
     all: ["auth"] as const,
     profile: () => [...queryKeys.auth.all, "profile"] as const,
   },
+  checkout: {
+    all: ["checkout"] as const,
+    customerByUserId: () =>
+      [...queryKeys.checkout.all, "customer", "by-user"] as const,
+  },
 } as const;

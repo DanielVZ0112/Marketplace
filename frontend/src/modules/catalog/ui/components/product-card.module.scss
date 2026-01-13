@@ -1,0 +1,50 @@
+@use '@/shared/styles/tokens' as *;
+
+.productCard {
+  background: transparent;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  transition: all $transition-base;
+  cursor: pointer;
+  
+  &__imageWrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1.25;
+    overflow: hidden;
+    border-radius: $radius-lg;
+    background: $color-surface;
+    margin-bottom: $spacing-md;
+  }
+  
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $transition-slow;
+  }
+  
+  &__content {
+    padding: 0;
+  }
+  
+  &__title {
+    font-size: 14px;
+    font-weight: 400;
+    color: $color-black;
+    margin-bottom: $spacing-xs;
+    line-height: 1.4;
+  }
+  
+  &__price {
+    font-size: 16px;
+    font-weight: 600;
+    color: $color-black;
+  }
+  
+  &:hover {
+    .productCard__image {
+      transform: scale(1.05);
+    }
+  }
+}

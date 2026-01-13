@@ -2,15 +2,16 @@ import { useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useGetProducts } from "../../application/useGetProducts";
 import { ProductGrid } from "../components/ProductGrid";
-import { FiltersBar } from "../components/FiltersBar";
+import { FiltersSidebar } from "../components/FiltersSidebar";
 import { Pagination } from "../components/Pagination";
 import { SkeletonLoader } from "@/shared/ui/components/SkeletonLoader";
 import { EmptyState } from "@/shared/ui/components/EmptyState";
 import { useCatalogFilters } from "@/shared/stores/filters.store";
-import { Container, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import type { Product } from "../../domain/Product";
 import type { PaginatedProducts } from "../../domain/ProductFilters";
+import styles from "./catalog-page.module.scss";
 
 export function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -100,46 +101,56 @@ export function CatalogPage() {
   ]);
 
   return (
-    <Container sx={{ py: 6 }}>
-      <Typography variant="h4" gutterBottom>
-        Catálogo de Productos
-      </Typography>
+    <Box className={styles.catalogPage}>
+      <Box className={styles.catalogPage__sidebar}>
+        <FiltersSidebar products={products} />
+      </Box>
 
-      <FiltersBar products={products} />
-
-      {isLoading ? (
-        <SkeletonLoader count={8} variant="card" />
-      ) : !products || products.length === 0 ? (
-        <EmptyState
-          title="No se encontraron productos"
-          description="Intenta ajustar los filtros para ver más resultados"
-          icon={<SearchOffIcon sx={{ fontSize: 64, color: "text.secondary" }} />}
-          action={{
-            label: "Limpiar filtros",
-            onClick: () => {
-              clearFilters();
-              navigate("/catalog", { replace: true });
-            },
-          }}
-        />
-      ) : (
-        <>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {pagination
-              ? `${pagination.total} producto(s) encontrado(s)`
-              : `${products.length} producto(s) encontrado(s)`}
+      <Box className={styles.catalogPage__content}>
+        <Box className={styles.catalogPage__header}>
+          <Typography variant="h1" className={styles.catalogPage__title}>
+            Catálogo
           </Typography>
-          <ProductGrid products={products} />
-          {pagination && (
-            <Pagination
-              total={pagination.total}
-              page={pagination.page}
-              limit={pagination.limit}
-              totalPages={pagination.totalPages}
-            />
+          {!isLoading && products && products.length > 0 && (
+            <Typography variant="body2" className={styles.catalogPage__count}>
+              {pagination
+                ? `${pagination.total} producto(s) encontrado(s)`
+                : `${products.length} producto(s) encontrado(s)`}
+            </Typography>
           )}
-        </>
-      )}
-    </Container>
+        </Box>
+
+        {isLoading ? (
+          <SkeletonLoader count={9} variant="card" />
+        ) : !products || products.length === 0 ? (
+          <EmptyState
+            title="No se encontraron productos"
+            description="Intenta ajustar los filtros para ver más resultados"
+            icon={<SearchOffIcon sx={{ fontSize: 64, color: "text.secondary" }} />}
+            action={{
+              label: "Limpiar filtros",
+              onClick: () => {
+                clearFilters();
+                navigate("/catalog", { replace: true });
+              },
+            }}
+          />
+        ) : (
+          <>
+            <Box className={styles.catalogPage__grid}>
+              <ProductGrid products={products} />
+            </Box>
+            {pagination && (
+              <Pagination
+                total={pagination.total}
+                page={pagination.page}
+                limit={pagination.limit}
+                totalPages={pagination.totalPages}
+              />
+            )}
+          </>
+        )}
+      </Box>
+    </Box>
   );
 }

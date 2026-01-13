@@ -17,7 +17,10 @@ export class CreateCustomerUseCase {
       const customer = CustomerMapper.toEntity(customerData);
       return await this.customerRepository.create(customer);
     } catch (error) {
-      throw new InternalServerErrorException('Error al crear el cliente');
+      console.error('Error al crear el cliente:', error);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Error al crear el cliente'
+      );
     }
   }
 }

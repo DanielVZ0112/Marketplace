@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/shared/stores/cart.store";
 import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../../application/useCheckout";
+import { useGetCustomerByUserId } from "../../application/useGetCustomerByUserId";
+import { useProfile } from "@/modules/auth/application/useProfile";
+import { useSessionStore } from "@/shared/stores/session.store";
 import type { CreateCustomerDto } from "../../domain/Customer";
 import { NavigationButton } from "@/shared/components";
 import {
@@ -21,6 +24,25 @@ export function CheckoutPage() {
   const items = useCartStore((s) => s.items);
   const total = useCartStore((s) => s.getTotalPrice());
   const checkoutMutation = useCheckout();
+  const setCustomer = useSessionStore((s) => s.setCustomer);
+  const customerFromStore = useSessionStore((s) => s.customer);
+
+  // Obtener usuario logueado
+  const { data: user } = useProfile();
+
+  // Obtener customer si hay usuario logueado
+  const { data: customerData, isLoading: isLoadingCustomer } = useGetCustomerByUserId(!!user);
+
+  // Guardar customer en el store cuando se obtiene
+  useEffect(() => {
+    if (customerData) {
+      setCustomer(customerData);
+    }
+  }, [customerData, setCustomer]);
+
+  // Usar customer del store o el obtenido de la query
+  const customer = customerFromStore || customerData;
+  const isFormLocked = !!customer;
 
   const [formData, setFormData] = useState<CreateCustomerDto>({
     first_name: "",
@@ -34,9 +56,31 @@ export function CheckoutPage() {
     country: "",
   });
 
+  // Prellenar formulario cuando hay customer
+  useEffect(() => {
+    if (customer) {
+      setFormData({
+        first_name: customer.first_name || "",
+        last_name: customer.last_name || "",
+        document_number: customer.document_number || "",
+        birth_date: customer.birth_date
+          ? typeof customer.birth_date === "string"
+            ? customer.birth_date.split("T")[0]
+            : new Date(customer.birth_date).toISOString().split("T")[0]
+          : "",
+        phone: customer.phone || "",
+        email: customer.email || "",
+        address: customer.address || "",
+        city: customer.city || "",
+        country: customer.country || "",
+        user_id: customer.user_id || null,
+      });
+    }
+  }, [customer]);
+
   // Validar que todos los items tengan variante
   const hasItemsWithoutVariant = items.some((item) => !item.variant);
-  
+
   if (items.length === 0) {
     return (
       <Container sx={{ py: 6, textAlign: "center" }}>
@@ -67,9 +111,23 @@ export function CheckoutPage() {
       return;
     }
 
+    // Limpiar campos vacíos antes de enviar
+    const cleanData: CreateCustomerDto = {
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      document_number: formData.document_number || undefined,
+      birth_date: formData.birth_date || undefined,
+      phone: formData.phone || undefined,
+      email: formData.email || undefined,
+      address: formData.address || undefined,
+      city: formData.city || undefined,
+      country: formData.country || undefined,
+      user_id: user?.id || null,
+    };
+
     checkoutMutation.mutate(
       {
-        customer: formData,
+        customer: cleanData,
         payment_method: "credit_card",
         payment_provider: "simulated",
         simulate_success: true,
@@ -87,6 +145,7 @@ export function CheckoutPage() {
   const handleInputChange = (field: keyof CreateCustomerDto) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (isFormLocked) return; // No permitir cambios si el formulario está bloqueado
     setFormData((prev) => ({
       ...prev,
       [field]: e.target.value,
@@ -107,6 +166,18 @@ export function CheckoutPage() {
               Información de Envío
             </Typography>
 
+            {isLoadingCustomer && (
+              <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+                <CircularProgress size={24} />
+              </Box>
+            )}
+
+            {isFormLocked && (
+              <Alert severity="info" sx={{ mb: 2 }}>
+                Tus datos están guardados. Los campos están bloqueados para proteger tu información.
+              </Alert>
+            )}
+
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
               <TextField
                 fullWidth
@@ -115,6 +186,7 @@ export function CheckoutPage() {
                 onChange={handleInputChange("first_name")}
                 required
                 margin="normal"
+                disabled={isFormLocked}
               />
 
               <TextField
@@ -124,6 +196,23 @@ export function CheckoutPage() {
                 onChange={handleInputChange("last_name")}
                 required
                 margin="normal"
+                disabled={isFormLocked}
+              />
+
+              <TextField
+                fullWidth
+                label="Fecha de Nacimiento"
+                type="date"
+                value={formData.birth_date}
+                onChange={handleInputChange("birth_date")}
+                margin="normal"
+                disabled={isFormLocked}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputProps={{
+                  max: new Date().toISOString().split("T")[0],
+                }}
               />
 
               <TextField
@@ -133,6 +222,7 @@ export function CheckoutPage() {
                 value={formData.email}
                 onChange={handleInputChange("email")}
                 margin="normal"
+                disabled={isFormLocked}
               />
 
               <TextField
@@ -141,6 +231,7 @@ export function CheckoutPage() {
                 value={formData.phone}
                 onChange={handleInputChange("phone")}
                 margin="normal"
+                disabled={isFormLocked}
               />
 
               <TextField
@@ -149,6 +240,7 @@ export function CheckoutPage() {
                 value={formData.address}
                 onChange={handleInputChange("address")}
                 margin="normal"
+                disabled={isFormLocked}
               />
 
               <TextField
@@ -157,6 +249,7 @@ export function CheckoutPage() {
                 value={formData.city}
                 onChange={handleInputChange("city")}
                 margin="normal"
+                disabled={isFormLocked}
               />
 
               <TextField
@@ -165,13 +258,23 @@ export function CheckoutPage() {
                 value={formData.country}
                 onChange={handleInputChange("country")}
                 margin="normal"
+                disabled={isFormLocked}
               />
 
               {checkoutMutation.isError && (
                 <Alert severity="error" sx={{ mt: 2 }}>
-                  {checkoutMutation.error instanceof Error
-                    ? checkoutMutation.error.message
-                    : "Error al procesar el checkout"}
+                  {(() => {
+                    const error = checkoutMutation.error as any;
+                    if (error?.response?.data?.message) {
+                      return Array.isArray(error.response.data.message)
+                        ? error.response.data.message.join(", ")
+                        : error.response.data.message;
+                    }
+                    if (error?.message) {
+                      return error.message;
+                    }
+                    return "Error al procesar el checkout";
+                  })()}
                 </Alert>
               )}
 

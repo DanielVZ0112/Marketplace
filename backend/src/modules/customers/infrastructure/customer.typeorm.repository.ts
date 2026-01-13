@@ -30,6 +30,13 @@ export class CustomerTypeOrmRepository implements CustomerRepository {
     });
   }
 
+  async findByUserId(userId: number): Promise<Customer | null> {
+    return await this.typeOrmRepository.findOne({
+      where: { user_id: userId, deleted_at: IsNull() },
+      relations: ['user'],
+    });
+  }
+
   async update(id: string, customer: Partial<Customer>): Promise<Customer> {
     await this.typeOrmRepository.update(
       { id: Number(id), deleted_at: IsNull() },

@@ -44,7 +44,10 @@ export class CreateOrderUseCase {
       return orderWithItems;
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException('Error al crear la orden');
+      console.error('Error al crear la orden:', error);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Error al crear la orden'
+      );
     } finally {
       await queryRunner.release();
     }

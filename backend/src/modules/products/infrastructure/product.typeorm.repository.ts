@@ -108,3 +108,84 @@ export class ProductTypeOrmRepository implements ProductRepository {
     return queryBuilder.getMany();
   }
 
+  async findWithFiltersPaginated(filters: ProductFilters): Promise<PaginatedProducts> {
+    const page = filters.page || 1;
+    const limit = filters.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const queryBuilder = this.typeOrmRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.variants', 'variants')
+      .where('product.deleted_at IS NULL')
+      .andWhere('product.is_active = :isActive', { isActive: true });
+
+    if (filters.search) {
+      queryBuilder.andWhere('product.name ILIKE :search', {
+        search: `%${filters.search}%`,
+      });
+    }
+
+    if (filters.category_id) {
+      queryBuilder.andWhere('product.category_id = :categoryId', {
+        categoryId: filters.category_id,
+      });
+    }
+
+    if (filters.size || filters.color) {
+      if (filters.size && filters.color) {
+        queryBuilder.andWhere(
+          'EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = product.id AND pv.deleted_at IS NULL AND pv.size = :size AND pv.color = :color)',
+          { size: filters.size, color: filters.color },
+        );
+      } else if (filters.size) {
+        queryBuilder.andWhere(
+          'EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = product.id AND pv.deleted_at IS NULL AND pv.size = :size)',
+          { size: filters.size },
+        );
+      } else if (filters.color) {
+        queryBuilder.andWhere(
+          'EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = product.id AND pv.deleted_at IS NULL AND pv.color = :color)',
+          { color: filters.color },
+        );
+      }
+    }
+
+    if (filters.min_price !== undefined) {
+      queryBuilder.andWhere('product.price >= :minPrice', {
+        minPrice: filters.min_price,
+      });
+    }
+
+    if (filters.max_price !== undefined) {
+      queryBuilder.andWhere('product.price <= :maxPrice', {
+        maxPrice: filters.max_price,
+      });
+    }
+
+    // Ordenamiento
+    if (filters.sortBy) {
+      const order = filters.order || 'asc';
+      const sortBy = filters.sortBy === 'created_at' ? 'product.created_at' : `product.${filters.sortBy}`;
+      queryBuilder.orderBy(sortBy, order.toUpperCase() as 'ASC' | 'DESC');
+    } else {
+      queryBuilder.orderBy('product.created_at', 'DESC');
+    }
+
+    // Contar el total antes de aplicar paginación
+    const total = await queryBuilder.getCount();
+
+    // Aplicar paginación
+    const data = await queryBuilder.skip(skip).take(limit).getMany();
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages,
+    };
+  }
+}

@@ -4,14 +4,14 @@ import { CreateOrderDto } from '../dto/create-order.dto';
 
 export class OrderMapper {
   static toEntity(dto: CreateOrderDto): { order: Order; items: OrderItem[] } {
-    const order = new Order();
-    order.customer_id = dto.customer_id;
-    order.user_id = dto.user_id ?? 0;
-    order.status = dto.status;
-    
-    order.total = dto.items.reduce((sum, item) => {
-      return sum + (item.unit_price * item.quantity);
-    }, 0);
+    const order = Object.assign(new Order(), {
+      customer_id: dto.customer_id,
+      user_id: dto.user_id || undefined,
+      status: dto.status,
+      total: dto.items.reduce((sum, item) => {
+        return sum + (item.unit_price * item.quantity);
+      }, 0),
+    } as Partial<Order>);
 
     const items = dto.items.map(itemDto => {
       const item = new OrderItem();

@@ -5,14 +5,15 @@ import { CreatePaymentDto } from '../dto/create-payment.dto';
 
 export class PaymentMapper {
   static toEntity(dto: CreatePaymentDto): Payment {
-    const payment = new Payment();
-    payment.order_id = dto.order_id;
-    payment.amount = dto.amount;
-    payment.payment_method = dto.payment_method;
-    payment.payment_provider = dto.payment_provider || PaymentProvider.SIMULATED;
-    payment.payment_status = PaymentStatus.PENDING;
-    payment.transaction_id = dto.transaction_id || '';
-    payment.metadata = dto.metadata || {};
+    const payment = Object.assign(new Payment(), {
+      order_id: dto.order_id,
+      amount: dto.amount,
+      payment_method: dto.payment_method,
+      payment_provider: dto.payment_provider || PaymentProvider.SIMULATED,
+      payment_status: PaymentStatus.PENDING,
+      transaction_id: dto.transaction_id || undefined,
+      metadata: dto.metadata || undefined,
+    } as Partial<Payment>);
     return payment;
   }
 }

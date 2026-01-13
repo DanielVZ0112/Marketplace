@@ -14,6 +14,14 @@ export class CheckoutApiRepository {
   }
 
   /**
+   * Obtener un customer por user_id (del usuario autenticado)
+   */
+  static async getCustomerByUserId(): Promise<Customer | null> {
+    const { data: response } = await api.get<{ data: Customer | null }>(`/customers/by-user`);
+    return response.data;
+  }
+
+  /**
    * Crear una orden
    */
   static async createOrder(data: CreateOrderDto): Promise<Order> {
