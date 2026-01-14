@@ -1,2 +1,38 @@
 @use './tokens';
 @use './typography';
+
+// Estilos globales para botones
+.MuiButton-root {
+  &.MuiButton-contained {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    transition: background-color 200ms ease, color 200ms ease;
+    
+    &:hover {
+      background-color: #6B7280;
+      color: #ffffff;
+    }
+  }
+  
+  &.MuiButton-outlined {
+    border-color: #1a1a1a;
+    color: #1a1a1a;
+    transition: background-color 200ms ease, color 200ms ease;
+    
+    &:hover {
+      background-color: #6B7280;
+      border-color: #6B7280;
+      color: #ffffff;
+    }
+  }
+  
+  &.MuiButton-text {
+    color: #1a1a1a;
+    transition: background-color 200ms ease, color 200ms ease;
+    
+    &:hover {
+      background-color: #6B7280;
+      color: #ffffff;
+    }
+  }
+}

@@ -24,14 +24,16 @@ export function Navbar() {
   };
 
   return (
-    <AppBar position="sticky" color="transparent" elevation={0} className={styles.navbar}>
+    <AppBar position="sticky" color="default" elevation={0} className={styles.navbar}>
       <Toolbar className={styles.navbar__container}>
         <Typography
           className={styles.navbar__logo}
           variant="h5"
           onClick={() => navigate("/")}
         >
-          DS for You
+          <span className={styles.navbar__logoShort}>DS</span>
+          <span className={styles.navbar__logoFull}>Different Style</span>
+          <span className={styles.navbar__logoText}> for You</span>
         </Typography>
 
         <div className={styles.navbar__actions}>

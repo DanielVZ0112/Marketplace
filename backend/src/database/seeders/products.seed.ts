@@ -99,13 +99,16 @@ export class ProductsSeeder implements Seeder {
       
       const exists = await repo.findOne({ where: { name: productData.name } });
       if (!exists) {
-        await repo.save(repo.create({
+        const newProduct = await repo.save(repo.create({
           name: productData.name,
           description: productData.description,
           price: productData.price,
           category_id: productData.category.id,
           is_active: true,
         }));
+        
+        newProduct.image_url = `${newProduct.id}.jpg`;
+        await repo.save(newProduct);
       }
     }
 

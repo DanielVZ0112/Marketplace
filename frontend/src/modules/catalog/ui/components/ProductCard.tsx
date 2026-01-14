@@ -10,7 +10,28 @@ export function ProductCard({ product }: { product: Product }) {
   
   const imageUrl = useMemo(() => {
     const url = product.image_url || product.imageUrl;
-    return url || noImage;
+    if (!url) return noImage;
+    
+    // Si la URL ya es una ruta completa (contiene / o http), usarla directamente
+    if (url.includes('/') || url.startsWith('http')) {
+      return url;
+    }
+    
+    // Si la URL es solo un nombre de archivo (ej: "1.jpg"), construir la ruta completa
+    // En Vite, para acceder a assets dinámicamente, usamos new URL con import.meta.url
+    try {
+      // Construir la ruta usando new URL para que Vite pueda resolverla correctamente
+      const basePath = import.meta.env.VITE_URL_IMAGES || '/src/assets/product-image';
+      // Si basePath es relativo, construir la URL correctamente
+      if (basePath.startsWith('/')) {
+        // En desarrollo, Vite sirve desde la raíz, así que usamos la ruta directamente
+        return `${basePath}/${url}`;
+      }
+      return `${basePath}/${url}`;
+    } catch {
+      // Fallback a noImage si hay algún error
+      return noImage;
+    }
   }, [product.image_url, product.imageUrl]);
   
   const priceDisplay = useMemo(() => {
