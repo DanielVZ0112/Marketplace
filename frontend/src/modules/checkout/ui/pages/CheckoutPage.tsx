@@ -17,6 +17,8 @@ import {
   Alert,
   CircularProgress,
   Divider,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 
 export function CheckoutPage() {
@@ -43,6 +45,14 @@ export function CheckoutPage() {
   // Usar customer del store o el obtenido de la query
   const customer = customerFromStore || customerData;
   const isFormLocked = !!customer;
+
+  // Solo mostrar opción de registro si NO está logueado
+  const isNotLoggedIn = !user;
+
+  const [wantsToRegister, setWantsToRegister] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const [formData, setFormData] = useState<CreateCustomerDto>({
     first_name: "",
@@ -111,6 +121,23 @@ export function CheckoutPage() {
       return;
     }
 
+    // Validar contraseñas si quiere registrarse
+    if (wantsToRegister && isNotLoggedIn) {
+      if (!password || password.length < 6) {
+        setPasswordError("La contraseña debe tener al menos 6 caracteres");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setPasswordError("Las contraseñas no coinciden");
+        return;
+      }
+      if (!formData.email) {
+        setPasswordError("El email es requerido para registrarse");
+        return;
+      }
+      setPasswordError("");
+    }
+
     // Limpiar campos vacíos antes de enviar
     const cleanData: CreateCustomerDto = {
       first_name: formData.first_name,
@@ -128,6 +155,8 @@ export function CheckoutPage() {
     checkoutMutation.mutate(
       {
         customer: cleanData,
+        wantsToRegister: wantsToRegister && isNotLoggedIn,
+        password: wantsToRegister && isNotLoggedIn ? password : undefined,
         payment_method: "credit_card",
         payment_provider: "simulated",
         simulate_success: true,
@@ -155,7 +184,7 @@ export function CheckoutPage() {
   return (
     <Container sx={{ py: 6 }}>
       <Typography variant="h4" gutterBottom>
-        Checkout
+        Pago de Pedido
       </Typography>
 
       <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
@@ -223,7 +252,68 @@ export function CheckoutPage() {
                 onChange={handleInputChange("email")}
                 margin="normal"
                 disabled={isFormLocked}
+                required={wantsToRegister && isNotLoggedIn}
               />
+
+              {/* Checkbox para registrarse (solo si no está logueado) */}
+              {isNotLoggedIn && (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={wantsToRegister}
+                      onChange={(e) => {
+                        setWantsToRegister(e.target.checked);
+                        if (!e.target.checked) {
+                          setPassword("");
+                          setConfirmPassword("");
+                          setPasswordError("");
+                        }
+                      }}
+                    />
+                  }
+                  label="¿Quieres registrarte?"
+                  sx={{ mt: 2, mb: 1 }}
+                />
+              )}
+
+              {/* Campos de contraseña (solo si quiere registrarse y no está logueado) */}
+              {wantsToRegister && isNotLoggedIn && (
+                <>
+                  <TextField
+                    fullWidth
+                    label="Contraseña"
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setPasswordError("");
+                    }}
+                    margin="normal"
+                    required
+                    error={!!passwordError}
+                    helperText={passwordError || "Mínimo 6 caracteres"}
+                  />
+
+                  <TextField
+                    fullWidth
+                    label="Confirmar Contraseña"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      setPasswordError("");
+                    }}
+                    margin="normal"
+                    required
+                    error={!!passwordError && password !== confirmPassword}
+                    helperText={
+                      passwordError && password !== confirmPassword
+                        ? passwordError
+                        : ""
+                    }
+                  />
+                </>
+              )}
 
               <TextField
                 fullWidth

@@ -6,12 +6,14 @@ import {
   Box,
   Button,
   Alert,
+  Chip,
 } from "@mui/material";
 import { useCartStore } from "@/shared/stores/cart.store";
 import { useMemo, useState } from "react";
 import { VariantSelector } from "../components/VariantSelector";
 import { SkeletonLoader } from "@/shared/ui/components/SkeletonLoader";
 import { EmptyState } from "@/shared/ui/components/EmptyState";
+import { BackButton } from "@/shared/components";
 import type { ProductVariant } from "../../domain/ProductVariant";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import noImage from "@/assets/no-image.jpg";
@@ -64,6 +66,9 @@ export function ProductDetailPage() {
   if (isError || !product) {
     return (
       <Container sx={{ py: 6 }}>
+        <Box sx={{ mb: 3 }}>
+          <BackButton to="/catalog" label="Volver al catálogo" />
+        </Box>
         <EmptyState
           title="Producto no encontrado"
           description="El producto que buscas no existe o ha sido eliminado"
@@ -80,6 +85,9 @@ export function ProductDetailPage() {
 
   return (
     <Container sx={{ py: 6 }}>
+      <Box sx={{ mb: 3 }}>
+        <BackButton to="/catalog" label="Volver al catálogo" />
+      </Box>
       <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
         <Box sx={{ flex: 1, minWidth: 300 }}>
           <img
@@ -93,7 +101,20 @@ export function ProductDetailPage() {
         </Box>
 
         <Box sx={{ flex: 2, minWidth: 300 }}>
-          <Typography variant="h4">{product.name}</Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+            <Typography variant="h4">{product.name}</Typography>
+            {selectedVariant && (
+              <Chip
+                label={
+                  selectedVariant.stock > 0
+                    ? `Disponible (${selectedVariant.stock} unidades)`
+                    : "No disponible"
+                }
+                color={selectedVariant.stock > 0 ? "success" : "error"}
+                size="small"
+              />
+            )}
+          </Box>
 
           <Typography variant="h6" sx={{ mt: 1 }} color="primary">
             ${displayPrice.toFixed(2)}
@@ -119,7 +140,13 @@ export function ProductDetailPage() {
 
           {selectedVariant && selectedVariant.stock <= 0 && (
             <Alert severity="error" sx={{ mt: 2 }}>
-              Esta variante está agotada
+              Esta variante está agotada. No está disponible para agregar al carrito.
+            </Alert>
+          )}
+
+          {selectedVariant && selectedVariant.stock > 0 && selectedVariant.stock <= 5 && (
+            <Alert severity="warning" sx={{ mt: 2 }}>
+              ¡Últimas unidades! Solo quedan {selectedVariant.stock} disponible(s).
             </Alert>
           )}
 
@@ -128,8 +155,13 @@ export function ProductDetailPage() {
             sx={{ mt: 3 }}
             disabled={isAddDisabled}
             onClick={handleAddToCart}
+            fullWidth
           >
-            Agregar al carrito
+            {isOutOfStock
+              ? "No disponible"
+              : hasVariants && !selectedVariant
+              ? "Selecciona una variante"
+              : "Agregar al carrito"}
           </Button>
         </Box>
       </Box>

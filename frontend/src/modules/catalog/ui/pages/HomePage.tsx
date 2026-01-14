@@ -35,52 +35,61 @@ export function HomePage() {
         </Box>
       </Box>
 
-      <Box className={styles.homePage__features}>
-        <Box className={styles.homePage__feature}>
-          <img 
-            src={envioGratis} 
-            alt="Envío Gratis" 
-            className={styles.homePage__featureImage}
-          />
-          <Box className={styles.homePage__featureContent}>
-            <Typography variant="h6" className={styles.homePage__featureTitle}>
-              Envío Gratis
-            </Typography>
-            <Typography variant="body2" className={styles.homePage__featureDescription}>
-              En compras mayores a $50
-            </Typography>
-          </Box>
-        </Box>
+      <Box className={styles.homePage__featuresSection}>
+        <Typography variant="h2" className={styles.homePage__featuresTitle}>
+          ¿Por qué elegirnos?
+        </Typography>
+        <Typography variant="body1" className={styles.homePage__featuresSubtitle}>
+          Comprometidos con tu experiencia de compra
+        </Typography>
 
-        <Box className={styles.homePage__feature}>
-          <img 
-            src={devolucionesFaciles} 
-            alt="Devoluciones Fáciles" 
-            className={styles.homePage__featureImage}
-          />
-          <Box className={styles.homePage__featureContent}>
-            <Typography variant="h6" className={styles.homePage__featureTitle}>
-              Devoluciones Fáciles
-            </Typography>
-            <Typography variant="body2" className={styles.homePage__featureDescription}>
-              Hasta 30 días para devolver
-            </Typography>
+        <Box className={styles.homePage__features}>
+          <Box className={styles.homePage__feature}>
+            <img 
+              src={envioGratis} 
+              alt="Envío Gratis" 
+              className={styles.homePage__featureImage}
+            />
+            <Box className={styles.homePage__featureContent}>
+              <Typography variant="h6" className={styles.homePage__featureTitle}>
+                Envío Gratis
+              </Typography>
+              <Typography variant="body2" className={styles.homePage__featureDescription}>
+                En compras mayores a $50
+              </Typography>
+            </Box>
           </Box>
-        </Box>
 
-        <Box className={styles.homePage__feature}>
-          <img 
-            src={ofertaEspecial} 
-            alt="Oferta Especial" 
-            className={styles.homePage__featureImage}
-          />
-          <Box className={styles.homePage__featureContent}>
-            <Typography variant="h6" className={styles.homePage__featureTitle}>
-              Ofertas Especiales
-            </Typography>
-            <Typography variant="body2" className={styles.homePage__featureDescription}>
-              Descuentos exclusivos
-            </Typography>
+          <Box className={styles.homePage__feature}>
+            <img 
+              src={devolucionesFaciles} 
+              alt="Devoluciones Fáciles" 
+              className={styles.homePage__featureImage}
+            />
+            <Box className={styles.homePage__featureContent}>
+              <Typography variant="h6" className={styles.homePage__featureTitle}>
+                Devoluciones Fáciles
+              </Typography>
+              <Typography variant="body2" className={styles.homePage__featureDescription}>
+                Hasta 30 días para devolver
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box className={styles.homePage__feature}>
+            <img 
+              src={ofertaEspecial} 
+              alt="Oferta Especial" 
+              className={styles.homePage__featureImage}
+            />
+            <Box className={styles.homePage__featureContent}>
+              <Typography variant="h6" className={styles.homePage__featureTitle}>
+                Ofertas Especiales
+              </Typography>
+              <Typography variant="body2" className={styles.homePage__featureDescription}>
+                Descuentos exclusivos
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Box>

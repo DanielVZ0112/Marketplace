@@ -1,9 +1,11 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCartStore } from "@/shared/stores/cart.store";
 import { useCreateCustomer } from "./useCreateCustomer";
 import { useCreateOrder } from "./useCreateOrder";
 import { useCreatePayment } from "./useCreatePayment";
 import { useProcessPayment } from "./useProcessPayment";
+import { useCreateUser } from "@/modules/auth/application/useCreateUser";
+import { queryKeys } from "@/shared/lib/query-keys";
 import type { CreateCustomerDto } from "../domain/Customer";
 import type { CreatePaymentDto, ProcessPaymentDto } from "../domain/CreatePayment";
 
@@ -12,6 +14,8 @@ import type { CreatePaymentDto, ProcessPaymentDto } from "../domain/CreatePaymen
  */
 export interface CheckoutDto {
   customer: CreateCustomerDto;
+  wantsToRegister?: boolean;
+  password?: string;
   payment_method?: string;
   payment_provider?: string;
   metadata?: Record<string, any>;
@@ -30,12 +34,14 @@ export interface CheckoutResult {
 
 /**
  * Hook para realizar el checkout completo
- * Orquesta el flujo: Customer → Order → Payment → Process Payment
+ * Orquesta el flujo: User (opcional) → Customer → Order → Payment → Process Payment
  */
 export function useCheckout() {
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
+  const queryClient = useQueryClient();
 
+  const createUserMutation = useCreateUser();
   const createCustomerMutation = useCreateCustomer();
   const createOrderMutation = useCreateOrder();
   const createPaymentMutation = useCreatePayment();
@@ -43,13 +49,28 @@ export function useCheckout() {
 
   return useMutation({
     mutationFn: async (checkoutData: CheckoutDto): Promise<CheckoutResult> => {
-      // 1. Crear Customer
-      const customer = await createCustomerMutation.mutateAsync(checkoutData.customer);
+      let userId: number | null = checkoutData.customer.user_id || null;
 
-      // 2. Crear Order
+      // 1. Crear User primero si quiere registrarse
+      if (checkoutData.wantsToRegister && checkoutData.password && checkoutData.customer.email) {
+        const newUser = await createUserMutation.mutateAsync({
+          email: checkoutData.customer.email,
+          password: checkoutData.password,
+        });
+        userId = newUser.id;
+      }
+
+      // 2. Crear Customer con user_id si se creó User
+      const customerData = {
+        ...checkoutData.customer,
+        user_id: userId || undefined,
+      };
+      const customer = await createCustomerMutation.mutateAsync(customerData);
+
+      // 3. Crear Order
       const order = await createOrderMutation.mutateAsync({
         customer_id: customer.id,
-        user_id: checkoutData.customer.user_id || null,
+        user_id: userId || null,
         status: "pending",
         items: items.map((item) => {
           if (!item.variant) {
@@ -63,7 +84,7 @@ export function useCheckout() {
         }),
       });
 
-      // 3. Crear Payment
+      // 4. Crear Payment
       const paymentData: CreatePaymentDto = {
         order_id: order.id,
         amount: Number(order.total),
@@ -77,7 +98,7 @@ export function useCheckout() {
 
       const payment = await createPaymentMutation.mutateAsync(paymentData);
 
-      // 4. Procesar Payment
+      // 5. Procesar Payment
       const processPaymentData: ProcessPaymentDto = {
         payment_id: payment.id.toString(),
         simulate_success: checkoutData.simulate_success !== false,
@@ -101,6 +122,8 @@ export function useCheckout() {
     onSuccess: () => {
       // Limpiar carrito solo si todo fue exitoso
       clearCart();
+      // Invalidar queries de productos para actualizar el stock
+      queryClient.invalidateQueries({ queryKey: queryKeys.products.all });
     },
   });
 }
