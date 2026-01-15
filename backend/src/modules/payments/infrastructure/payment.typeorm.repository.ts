@@ -18,21 +18,36 @@ export class PaymentTypeOrmRepository implements PaymentRepository {
 
   async findAll(): Promise<Payment[]> {
     return await this.typeOrmRepository.find({
-      relations: ['order', 'order.customer', 'order.items', 'order.items.productVariant'],
+      relations: [
+        'order',
+        'order.customer',
+        'order.items',
+        'order.items.productVariant',
+      ],
     });
   }
 
   async findById(id: string): Promise<Payment | null> {
     return await this.typeOrmRepository.findOne({
       where: { id: Number(id) },
-      relations: ['order', 'order.customer', 'order.items', 'order.items.productVariant'],
+      relations: [
+        'order',
+        'order.customer',
+        'order.items',
+        'order.items.productVariant',
+      ],
     });
   }
 
   async findByOrderId(orderId: string): Promise<Payment[]> {
     return await this.typeOrmRepository.find({
       where: { order_id: Number(orderId) },
-      relations: ['order', 'order.customer', 'order.items', 'order.items.productVariant'],
+      relations: [
+        'order',
+        'order.customer',
+        'order.items',
+        'order.items.productVariant',
+      ],
       order: { created_at: 'DESC' },
     });
   }
@@ -46,4 +61,3 @@ export class PaymentTypeOrmRepository implements PaymentRepository {
     return updatedPayment;
   }
 }
-

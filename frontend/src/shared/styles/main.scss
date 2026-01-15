@@ -1,8 +1,7 @@
 @use './tokens';
 @use './typography';
 
-// Estilos globales para botones
-.MuiButton-root {
+:global(.MuiButton-root) {
   &.MuiButton-contained {
     background-color: #1a1a1a;
     color: #ffffff;

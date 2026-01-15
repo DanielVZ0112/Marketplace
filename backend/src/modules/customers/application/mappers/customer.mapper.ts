@@ -18,4 +18,3 @@ export class CustomerMapper {
     return customer;
   }
 }
-

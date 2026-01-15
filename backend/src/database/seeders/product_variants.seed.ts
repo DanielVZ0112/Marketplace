@@ -16,14 +16,25 @@ export class ProductVariantsSeeder implements Seeder {
     const products = await productRepo.find({ take: 20 });
 
     const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-    const colors = ['Negro', 'Blanco', 'Rojo', 'Azul', 'Verde', 'Gris', 'Beige', 'Marrón'];
+    const colors = [
+      'Negro',
+      'Blanco',
+      'Rojo',
+      'Azul',
+      'Verde',
+      'Gris',
+      'Beige',
+      'Marrón',
+    ];
 
     let variantCount = 0;
 
     for (const product of products) {
       // Crear 2-4 variantes por producto
       const numVariants = Math.floor(Math.random() * 3) + 2;
-      const selectedColors = colors.sort(() => 0.5 - Math.random()).slice(0, numVariants);
+      const selectedColors = colors
+        .sort(() => 0.5 - Math.random())
+        .slice(0, numVariants);
 
       for (let i = 0; i < numVariants; i++) {
         const size = sizes[Math.floor(Math.random() * sizes.length)];
@@ -33,13 +44,22 @@ export class ProductVariantsSeeder implements Seeder {
 
         const exists = await repo.findOne({ where: { sku } });
         if (!exists) {
-          await repo.save(repo.create({
-            product_id: product.id,
-            size,
-            color,
-            stock,
-            sku,
-          }));
+          const newVariant = await repo.save(
+            repo.create({
+              product_id: product.id,
+              size,
+              color,
+              stock,
+              sku,
+            }),
+          );
+
+          // Asignar la misma imagen del producto a la variante
+          if (product.image_url) {
+            newVariant.image_url = product.image_url;
+            await repo.save(newVariant);
+          }
+
           variantCount++;
         }
       }
@@ -55,17 +75,28 @@ export class ProductVariantsSeeder implements Seeder {
 
       const exists = await repo.findOne({ where: { sku } });
       if (!exists) {
-        await repo.save(repo.create({
-          product_id: product.id,
-          size,
-          color,
-          stock,
-          sku,
-        }));
+        const newVariant = await repo.save(
+          repo.create({
+            product_id: product.id,
+            size,
+            color,
+            stock,
+            sku,
+          }),
+        );
+
+        // Asignar la misma imagen del producto a la variante
+        if (product.image_url) {
+          newVariant.image_url = product.image_url;
+          await repo.save(newVariant);
+        }
+
         variantCount++;
       }
     }
 
-    console.log(`✅ Product variants seeded (${variantCount} variants created)`);
+    console.log(
+      `✅ Product variants seeded (${variantCount} variants created)`,
+    );
   }
 }

@@ -2,7 +2,7 @@ import { Skeleton, Box } from "@mui/material";
 
 interface SkeletonLoaderProps {
   count?: number;
-  variant?: "card" | "list" | "detail";
+  variant?: "card" | "list" | "detail" | "page";
 }
 
 export function SkeletonLoader({ count = 8, variant = "card" }: SkeletonLoaderProps) {
@@ -57,6 +57,16 @@ export function SkeletonLoader({ count = 8, variant = "card" }: SkeletonLoaderPr
           <Skeleton variant="text" width="80%" height={24} />
           <Skeleton variant="rectangular" width={200} height={40} sx={{ mt: 3 }} />
         </Box>
+      </Box>
+    );
+  }
+
+  if (variant === "page") {
+    return (
+      <Box sx={{ py: 6 }}>
+        <Skeleton variant="text" width="40%" height={48} sx={{ mb: 2 }} />
+        <Skeleton variant="text" width="60%" height={24} sx={{ mb: 4 }} />
+        <Skeleton variant="rectangular" height={400} />
       </Box>
     );
   }

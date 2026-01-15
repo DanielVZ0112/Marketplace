@@ -11,6 +11,7 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
+import { PasswordInput } from "@/shared/ui/components/PasswordInput";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -35,9 +36,9 @@ export function LoginPage() {
   };
 
   return (
-    <Container sx={{ py: 6, maxWidth: 400 }}>
-      <Paper sx={{ p: 4 }}>
-        <Typography variant="h4" gutterBottom align="center">
+    <Container sx={{ py: 8, maxWidth: 480 }}>
+      <Paper sx={{ p: 5 }}>
+        <Typography variant="h4" gutterBottom align="center" sx={{ mb: 1 }}>
           Iniciar Sesión
         </Typography>
 
@@ -45,7 +46,7 @@ export function LoginPage() {
           variant="body2"
           color="text.secondary"
           align="center"
-          sx={{ mb: 3 }}
+          sx={{ mb: 4 }}
         >
           Inicia sesión para ver tus órdenes y disfrutar de beneficios exclusivos
         </Typography>
@@ -70,12 +71,10 @@ export function LoginPage() {
             autoComplete="email"
           />
 
-          <TextField
-            fullWidth
-            label="Contraseña"
-            type="password"
+          <PasswordInput
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            label="Contraseña"
             required
             margin="normal"
             autoComplete="current-password"
@@ -87,11 +86,35 @@ export function LoginPage() {
             fullWidth
             size="large"
             disabled={loginMutation.isPending}
-            sx={{ mt: 3 }}
+            sx={{ 
+              mt: 3,
+              backgroundColor: '#1a1a1a',
+              color: '#ffffff',
+              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              '@keyframes pulse': {
+                '0%, 100%': {
+                  opacity: 1,
+                },
+                '50%': {
+                  opacity: 0.8,
+                },
+              },
+              '&:hover': {
+                backgroundColor: '#6B7280',
+                animation: 'none',
+                transform: 'scale(1.02)',
+                transition: 'all 0.3s ease',
+              },
+              '&:disabled': {
+                backgroundColor: '#6B7280',
+                color: '#ffffff',
+                animation: 'none',
+              },
+            }}
           >
             {loginMutation.isPending ? (
               <>
-                <CircularProgress size={20} sx={{ mr: 1 }} />
+                <CircularProgress size={20} sx={{ mr: 1, color: '#ffffff' }} />
                 Iniciando sesión...
               </>
             ) : (

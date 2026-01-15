@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { CategoryRepository } from '../domain/category.repository';
 import { CATEGORY_REPOSITORY } from '../domain/category.repository';
 import { Category } from '../../../database/entities/category.entity';
@@ -11,7 +16,10 @@ export class UpdateCategoryUseCase {
     private readonly categoryRepository: CategoryRepository,
   ) {}
 
-  async execute(id: string, categoryData: UpdateCategoryDto): Promise<Category> {
+  async execute(
+    id: string,
+    categoryData: UpdateCategoryDto,
+  ): Promise<Category> {
     try {
       const existingCategory = await this.categoryRepository.findById(id);
       if (!existingCategory) {
@@ -23,8 +31,9 @@ export class UpdateCategoryUseCase {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new InternalServerErrorException('Error al actualizar la categoría');
+      throw new InternalServerErrorException(
+        'Error al actualizar la categoría',
+      );
     }
   }
 }
-

@@ -1,4 +1,8 @@
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { CustomerRepository } from '../domain/customer.repository';
 import { CUSTOMER_REPOSITORY } from '../domain/customer.repository';
 import { Customer } from '../../../database/entities/customer.entity';
@@ -13,7 +17,7 @@ export class ListCustomersUseCase {
   async execute(): Promise<Customer[]> {
     try {
       return await this.customerRepository.findAll();
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException('Error al listar los clientes');
     }
   }

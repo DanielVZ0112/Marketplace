@@ -51,7 +51,6 @@ export function useCheckout() {
     mutationFn: async (checkoutData: CheckoutDto): Promise<CheckoutResult> => {
       let userId: number | null = checkoutData.customer.user_id || null;
 
-      // 1. Crear User primero si quiere registrarse
       if (checkoutData.wantsToRegister && checkoutData.password && checkoutData.customer.email) {
         const newUser = await createUserMutation.mutateAsync({
           email: checkoutData.customer.email,
@@ -60,14 +59,12 @@ export function useCheckout() {
         userId = newUser.id;
       }
 
-      // 2. Crear Customer con user_id si se creó User
       const customerData = {
         ...checkoutData.customer,
         user_id: userId || undefined,
       };
       const customer = await createCustomerMutation.mutateAsync(customerData);
 
-      // 3. Crear Order
       const order = await createOrderMutation.mutateAsync({
         customer_id: customer.id,
         user_id: userId || null,

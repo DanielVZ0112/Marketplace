@@ -1,6 +1,7 @@
 import { useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useGetProducts } from "../../application/useGetProducts";
+import { useGetCategories } from "../../application/useGetCategories";
 import { ProductGrid } from "../components/ProductGrid";
 import { FiltersSidebar } from "../components/FiltersSidebar";
 import { Pagination } from "../components/Pagination";
@@ -17,10 +18,12 @@ export function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { data: response, isLoading } = useGetProducts();
+  const { data: categories } = useGetCategories();
   const {
     syncWithUrl,
     toUrlParams,
     clearFilters,
+    setCategoryId,
     search,
     categoryId,
     size,
@@ -33,7 +36,6 @@ export function CatalogPage() {
   const isInitialMount = useRef(true);
   const isSyncingFromUrl = useRef(false);
 
-  // Determinar si la respuesta es paginada o un array simple
   const isPaginated = useMemo(() => {
     return response && typeof response === "object" && "data" in response && "total" in response;
   }, [response]);
@@ -53,13 +55,29 @@ export function CatalogPage() {
     return null;
   }, [response, isPaginated]);
 
-  // Memoizar los parámetros de URL actuales para comparación
   const currentUrlParams = useMemo(() => searchParams.toString(), [searchParams]);
 
-  // Sincronizar filtros con URL al cargar la página (solo una vez)
   useEffect(() => {
     if (isInitialMount.current) {
       isSyncingFromUrl.current = true;
+      
+      const categorySlug = searchParams.get("category");
+      if (categorySlug && categories) {
+        const category = categories.find((cat) => cat.slug === categorySlug);
+        if (category) {
+          setCategoryId(category.id);
+          const newParams = new URLSearchParams(searchParams);
+          newParams.delete("category");
+          newParams.set("category_id", category.id.toString());
+          setSearchParams(newParams, { replace: true });
+          isInitialMount.current = false;
+          setTimeout(() => {
+            isSyncingFromUrl.current = false;
+          }, 0);
+          return;
+        }
+      }
+      
       syncWithUrl(searchParams);
       isInitialMount.current = false;
       setTimeout(() => {
@@ -67,9 +85,8 @@ export function CatalogPage() {
       }, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [categories]);
 
-  // Sincronizar cambios de filtros con URL (evitar bucle infinito)
   useEffect(() => {
     if (isSyncingFromUrl.current || isInitialMount.current) {
       return;

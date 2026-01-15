@@ -1,4 +1,8 @@
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { CustomerRepository } from '../domain/customer.repository';
 import { CUSTOMER_REPOSITORY } from '../domain/customer.repository';
 import { Customer } from '../../../database/entities/customer.entity';
@@ -17,9 +21,8 @@ export class CreateCustomerUseCase {
       const customer = CustomerMapper.toEntity(customerData);
       return await this.customerRepository.create(customer);
     } catch (error) {
-      console.error('Error al crear el cliente:', error);
       throw new InternalServerErrorException(
-        error instanceof Error ? error.message : 'Error al crear el cliente'
+        error instanceof Error ? error.message : 'Error al crear el cliente',
       );
     }
   }

@@ -4,4 +4,3 @@ export enum PaymentProvider {
   MERCADO_PAGO = 'mercado_pago',
   SIMULATED = 'simulated',
 }
-

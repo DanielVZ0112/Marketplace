@@ -10,7 +10,7 @@ import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
-    UsersModule, 
+    UsersModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -30,4 +30,3 @@ import { UsersModule } from '../users/users.module';
   exports: [JwtModule],
 })
 export class AuthModule {}
-

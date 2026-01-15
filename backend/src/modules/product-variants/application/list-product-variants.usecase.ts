@@ -1,4 +1,8 @@
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { ProductVariantRepository } from '../domain/product-variant.repository';
 import { PRODUCT_VARIANT_REPOSITORY } from '../domain/product-variant.repository';
 import { ProductVariant } from '../../../database/entities/product-variant.entity';
@@ -13,8 +17,10 @@ export class ListProductVariantsUseCase {
   async execute(): Promise<ProductVariant[]> {
     try {
       return await this.productVariantRepository.findAll();
-    } catch (error) {
-      throw new InternalServerErrorException('Error al listar las variantes de productos');
+    } catch {
+      throw new InternalServerErrorException(
+        'Error al listar las variantes de productos',
+      );
     }
   }
 }

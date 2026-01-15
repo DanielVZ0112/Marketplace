@@ -2,6 +2,8 @@ import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import homeHero from "@/assets/Home.png";
+import leftImage from "@/assets/left-image.png";
+import rightImage from "@/assets/rigth-image.png";
 import envioGratis from "@/assets/envio-gratis.png";
 import devolucionesFaciles from "@/assets/devoluciones-faciles.png";
 import ofertaEspecial from "@/assets/oferta-especial.png";
@@ -37,26 +39,40 @@ export function HomePage() {
     <Box className={styles.homePage}>
       {/* Hero Section */}
       <Box className={styles.homePage__hero}>
-        <img 
-          src={homeHero} 
-          alt="Find your style" 
-          className={styles.homePage__heroImage}
-        />
-        <Box className={styles.homePage__heroOverlay} />
-        <Box className={styles.homePage__heroContent}>
-          <Typography variant="h1" className={styles.homePage__title}>
-            Encuentra tu estilo.
-          </Typography>
-          <Typography variant="body1" className={styles.homePage__subtitle}>
-            Descubre las últimas tendencias y eleva tu vestuario.
-          </Typography>
-          <button
-            onClick={() => navigate("/catalog")}
-            className={styles.homePage__ctaButton}
-            data-back="Descubrelo Ahora"
-            data-front="Ver Catálogo"
-          >
-          </button>
+        <Box className={styles.homePage__heroImages}>
+          <img 
+            src={leftImage} 
+            alt="Modelo izquierdo" 
+            className={styles.homePage__heroSideImage}
+          />
+          <Box className={styles.homePage__heroCenter}>
+            <img 
+              src={homeHero} 
+              alt="Find your style" 
+              className={styles.homePage__heroImage}
+            />
+            <Box className={styles.homePage__heroOverlay} />
+            <Box className={styles.homePage__heroContent}>
+              <Typography variant="h1" className={styles.homePage__title}>
+                Encuentra tu estilo.
+              </Typography>
+              <Typography variant="body1" className={styles.homePage__subtitle}>
+                Descubre las últimas tendencias y eleva tu vestuario.
+              </Typography>
+              <button
+                onClick={() => navigate("/catalog")}
+                className={styles.homePage__ctaButton}
+                data-back="Descubrelo Ahora"
+                data-front="Ver Catálogo"
+              >
+              </button>
+            </Box>
+          </Box>
+          <img 
+            src={rightImage} 
+            alt="Modelo derecho" 
+            className={styles.homePage__heroSideImage}
+          />
         </Box>
       </Box>
 

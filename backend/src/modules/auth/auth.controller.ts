@@ -1,4 +1,5 @@
 import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { LoginUseCase } from './application/login.usecase';
 import { LoginDto } from './application/dto/login.dto';
 import { LocalAuthGuard } from './infrastructure/guards/local-auth.guard';
@@ -12,6 +13,7 @@ export class AuthController {
   constructor(private readonly loginUseCase: LoginUseCase) {}
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Body() loginData: LoginDto) {
@@ -25,4 +27,3 @@ export class AuthController {
     return HttpResponse.ok(user, 'Perfil de usuario obtenido exitosamente');
   }
 }
-

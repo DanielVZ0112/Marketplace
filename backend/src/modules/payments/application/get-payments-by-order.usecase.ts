@@ -1,4 +1,8 @@
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { PaymentRepository } from '../domain/payment.repository';
 import { PAYMENT_REPOSITORY } from '../domain/payment.repository';
 import { Payment } from '../../../database/entities/payment.entity';
@@ -13,9 +17,10 @@ export class GetPaymentsByOrderUseCase {
   async execute(orderId: string): Promise<Payment[]> {
     try {
       return await this.paymentRepository.findByOrderId(orderId);
-    } catch (error) {
-      throw new InternalServerErrorException('Error al obtener los pagos de la orden');
+    } catch {
+      throw new InternalServerErrorException(
+        'Error al obtener los pagos de la orden',
+      );
     }
   }
 }
-

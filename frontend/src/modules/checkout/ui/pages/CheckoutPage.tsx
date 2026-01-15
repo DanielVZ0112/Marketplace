@@ -20,6 +20,7 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
+import { PasswordInput } from "@/shared/ui/components/PasswordInput";
 
 export function CheckoutPage() {
   const navigate = useNavigate();
@@ -29,24 +30,19 @@ export function CheckoutPage() {
   const setCustomer = useSessionStore((s) => s.setCustomer);
   const customerFromStore = useSessionStore((s) => s.customer);
 
-  // Obtener usuario logueado
   const { data: user } = useProfile();
 
-  // Obtener customer si hay usuario logueado
   const { data: customerData, isLoading: isLoadingCustomer } = useGetCustomerByUserId(!!user);
 
-  // Guardar customer en el store cuando se obtiene
   useEffect(() => {
     if (customerData) {
       setCustomer(customerData);
     }
   }, [customerData, setCustomer]);
 
-  // Usar customer del store o el obtenido de la query
   const customer = customerFromStore || customerData;
   const isFormLocked = !!customer;
 
-  // Solo mostrar opción de registro si NO está logueado
   const isNotLoggedIn = !user;
 
   const [wantsToRegister, setWantsToRegister] = useState(false);
@@ -66,7 +62,6 @@ export function CheckoutPage() {
     country: "",
   });
 
-  // Prellenar formulario cuando hay customer
   useEffect(() => {
     if (customer) {
       setFormData({
@@ -88,7 +83,6 @@ export function CheckoutPage() {
     }
   }, [customer]);
 
-  // Validar que todos los items tengan variante
   const hasItemsWithoutVariant = items.some((item) => !item.variant);
 
   if (items.length === 0) {
@@ -121,7 +115,6 @@ export function CheckoutPage() {
       return;
     }
 
-    // Validar contraseñas si quiere registrarse
     if (wantsToRegister && isNotLoggedIn) {
       if (!password || password.length < 6) {
         setPasswordError("La contraseña debe tener al menos 6 caracteres");
@@ -138,7 +131,6 @@ export function CheckoutPage() {
       setPasswordError("");
     }
 
-    // Limpiar campos vacíos antes de enviar
     const cleanData: CreateCustomerDto = {
       first_name: formData.first_name,
       last_name: formData.last_name,
@@ -174,7 +166,7 @@ export function CheckoutPage() {
   const handleInputChange = (field: keyof CreateCustomerDto) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (isFormLocked) return; // No permitir cambios si el formulario está bloqueado
+    if (isFormLocked) return;
     setFormData((prev) => ({
       ...prev,
       [field]: e.target.value,
@@ -188,7 +180,6 @@ export function CheckoutPage() {
       </Typography>
 
       <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-        {/* Formulario de Customer */}
         <Box sx={{ flex: 1, minWidth: 300 }}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
@@ -255,7 +246,6 @@ export function CheckoutPage() {
                 required={wantsToRegister && isNotLoggedIn}
               />
 
-              {/* Checkbox para registrarse (solo si no está logueado) */}
               {isNotLoggedIn && (
                 <FormControlLabel
                   control={
@@ -276,33 +266,29 @@ export function CheckoutPage() {
                 />
               )}
 
-              {/* Campos de contraseña (solo si quiere registrarse y no está logueado) */}
               {wantsToRegister && isNotLoggedIn && (
                 <>
-                  <TextField
-                    fullWidth
-                    label="Contraseña"
-                    type="password"
+                  <PasswordInput
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
                       setPasswordError("");
                     }}
+                    label="Contraseña"
                     margin="normal"
                     required
                     error={!!passwordError}
                     helperText={passwordError || "Mínimo 6 caracteres"}
+                    autoComplete="new-password"
                   />
 
-                  <TextField
-                    fullWidth
-                    label="Confirmar Contraseña"
-                    type="password"
+                  <PasswordInput
                     value={confirmPassword}
                     onChange={(e) => {
                       setConfirmPassword(e.target.value);
                       setPasswordError("");
                     }}
+                    label="Confirmar Contraseña"
                     margin="normal"
                     required
                     error={!!passwordError && password !== confirmPassword}
@@ -311,6 +297,8 @@ export function CheckoutPage() {
                         ? passwordError
                         : ""
                     }
+                    autoComplete="new-password"
+                    name="confirmPassword"
                   />
                 </>
               )}
@@ -389,7 +377,6 @@ export function CheckoutPage() {
           </Paper>
         </Box>
 
-        {/* Resumen del pedido */}
         <Box sx={{ flex: 1, minWidth: 300 }}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>

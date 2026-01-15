@@ -11,4 +11,3 @@ export interface ProductRepository {
   findWithFilters(filters: ProductFilters): Promise<Product[]>;
   findWithFiltersPaginated(filters: ProductFilters): Promise<PaginatedProducts>;
 }
-

@@ -19,7 +19,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(email: string, password: string): Promise<any> {
     const user = await this.userRepository.findByEmail(email);
-    
+
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
@@ -29,7 +29,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    
+
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
@@ -37,4 +37,3 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     return { userId: user.id, email: user.email };
   }
 }
-

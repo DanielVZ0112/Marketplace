@@ -18,7 +18,7 @@ export class PaymentsController {
     private readonly getPaymentByIdUseCase: GetPaymentByIdUseCase,
     private readonly getPaymentsByOrderUseCase: GetPaymentsByOrderUseCase,
   ) {}
-  
+
   @Public()
   @Post()
   async create(@Body() paymentData: CreatePaymentDto) {
@@ -28,7 +28,8 @@ export class PaymentsController {
   @Public()
   @Post('process')
   async process(@Body() processPaymentData: ProcessPaymentDto) {
-    const payment = await this.processPaymentUseCase.execute(processPaymentData);
+    const payment =
+      await this.processPaymentUseCase.execute(processPaymentData);
     return HttpResponse.ok(payment, 'Pago procesado exitosamente');
   }
 
@@ -47,7 +48,9 @@ export class PaymentsController {
   @Get('order/:orderId')
   async findByOrder(@Param('orderId') orderId: string) {
     const payments = await this.getPaymentsByOrderUseCase.execute(orderId);
-    return HttpResponse.ok(payments, 'Pagos de la orden obtenidos exitosamente');
+    return HttpResponse.ok(
+      payments,
+      'Pagos de la orden obtenidos exitosamente',
+    );
   }
 }
-

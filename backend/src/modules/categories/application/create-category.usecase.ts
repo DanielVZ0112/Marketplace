@@ -1,4 +1,8 @@
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { CategoryRepository } from '../domain/category.repository';
 import { CATEGORY_REPOSITORY } from '../domain/category.repository';
 import { Category } from '../../../database/entities/category.entity';
@@ -16,7 +20,7 @@ export class CreateCategoryUseCase {
     try {
       const category = CategoryMapper.toEntity(categoryData);
       return await this.categoryRepository.create(category);
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException('Error al crear la categoría');
     }
   }

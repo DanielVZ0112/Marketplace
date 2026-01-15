@@ -30,9 +30,30 @@ export function Navbar() {
           className={styles.navbar__logo}
           variant="h5"
           onClick={() => navigate("/")}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              navigate("/");
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Ir a la página de inicio"
         >
-          <span className={styles.navbar__logoShort}>DS</span>
-          <span className={styles.navbar__logoFull}>Different Style</span>
+          <span className={styles.navbar__logoLetter}>D</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>i</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>f</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>f</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>e</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>r</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>e</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>n</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>t</span>
+          <span className={styles.navbar__logoLetter}>S</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>t</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>y</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>l</span>
+          <span className={`${styles.navbar__logoLetter} ${styles.navbar__logoLetterExpand}`}>e</span>
           <span className={styles.navbar__logoText}> for You</span>
         </Typography>
 
@@ -40,7 +61,11 @@ export function Navbar() {
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {isAuthenticated ? (
               <>
-                <Button onClick={() => navigate("/orders")} color="inherit">
+                <Button 
+                  onClick={() => navigate("/orders")} 
+                  color="inherit"
+                  aria-label="Ver mis órdenes"
+                >
                   Mis Órdenes
                 </Button>
                 {user && (
@@ -48,7 +73,11 @@ export function Navbar() {
                     {user.email}
                   </Typography>
                 )}
-                <Button onClick={handleLogout} color="inherit">
+                <Button 
+                  onClick={handleLogout} 
+                  color="inherit"
+                  aria-label="Cerrar sesión"
+                >
                   Cerrar Sesión
                 </Button>
               </>
@@ -56,15 +85,20 @@ export function Navbar() {
               <Button
                 onClick={() => navigate("/login")}
                 color="inherit"
-                startIcon={<AccountCircleIcon />}
+                startIcon={<AccountCircleIcon aria-hidden="true" />}
+                aria-label="Iniciar sesión"
               >
                 Iniciar Sesión
               </Button>
             )}
 
-            <IconButton onClick={openCart}>
+            <IconButton 
+              onClick={openCart}
+              aria-label={`Abrir carrito de compras, ${itemsCount} ${itemsCount === 1 ? 'artículo' : 'artículos'}`}
+              aria-expanded={false}
+            >
               <Badge badgeContent={itemsCount} color="primary">
-                <CartIcon />
+                <CartIcon aria-hidden="true" />
               </Badge>
             </IconButton>
           </Box>

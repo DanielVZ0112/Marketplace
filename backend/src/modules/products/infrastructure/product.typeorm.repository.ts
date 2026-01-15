@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { ProductRepository } from '../domain/product.repository';
 import { Product } from '../../../database/entities/product.entity';
-import { ProductFilters, PaginatedProducts } from '../domain/product-filters.interface';
+import {
+  ProductFilters,
+  PaginatedProducts,
+} from '../domain/product-filters.interface';
 
 @Injectable()
 export class ProductTypeOrmRepository implements ProductRepository {
@@ -21,6 +24,7 @@ export class ProductTypeOrmRepository implements ProductRepository {
     return await this.typeOrmRepository.find({
       where: { deleted_at: IsNull(), is_active: true },
       relations: ['category', 'variants'],
+      order: { id: 'ASC' },
     });
   }
 
@@ -98,17 +102,21 @@ export class ProductTypeOrmRepository implements ProductRepository {
     // Ordenamiento
     if (filters.sortBy) {
       const order = filters.order || 'asc';
-      const sortBy = filters.sortBy === 'created_at' ? 'product.created_at' : `product.${filters.sortBy}`;
+      const sortBy =
+        filters.sortBy === 'created_at'
+          ? 'product.created_at'
+          : `product.${filters.sortBy}`;
       queryBuilder.orderBy(sortBy, order.toUpperCase() as 'ASC' | 'DESC');
     } else {
-      // Ordenamiento por defecto
-      queryBuilder.orderBy('product.created_at', 'DESC');
+      queryBuilder.orderBy('product.id', 'ASC');
     }
 
     return queryBuilder.getMany();
   }
 
-  async findWithFiltersPaginated(filters: ProductFilters): Promise<PaginatedProducts> {
+  async findWithFiltersPaginated(
+    filters: ProductFilters,
+  ): Promise<PaginatedProducts> {
     const page = filters.page || 1;
     const limit = filters.limit || 10;
     const skip = (page - 1) * limit;
@@ -166,10 +174,14 @@ export class ProductTypeOrmRepository implements ProductRepository {
     // Ordenamiento
     if (filters.sortBy) {
       const order = filters.order || 'asc';
-      const sortBy = filters.sortBy === 'created_at' ? 'product.created_at' : `product.${filters.sortBy}`;
+      const sortBy =
+        filters.sortBy === 'created_at'
+          ? 'product.created_at'
+          : `product.${filters.sortBy}`;
       queryBuilder.orderBy(sortBy, order.toUpperCase() as 'ASC' | 'DESC');
     } else {
-      queryBuilder.orderBy('product.created_at', 'DESC');
+      // Ordenamiento por defecto: por ID ascendente (1, 2, 3, ...)
+      queryBuilder.orderBy('product.id', 'ASC');
     }
 
     // Contar el total antes de aplicar paginación

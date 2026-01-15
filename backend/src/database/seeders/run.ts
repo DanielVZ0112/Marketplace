@@ -1,4 +1,3 @@
-import { DataSource } from 'typeorm';
 import { runSeeders } from './seed';
 import { AppDataSource } from '../data-source';
 
@@ -19,6 +18,4 @@ async function main() {
   }
 }
 
-main();
-
-
+void main();

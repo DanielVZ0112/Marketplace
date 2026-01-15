@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { ProductRepository } from '../domain/product.repository';
 import { PRODUCT_REPOSITORY } from '../domain/product.repository';
 import { Product } from '../../../database/entities/product.entity';
@@ -29,4 +34,3 @@ export class UpdateProductUseCase {
     }
   }
 }
-

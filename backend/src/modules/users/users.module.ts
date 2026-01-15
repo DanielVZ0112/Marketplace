@@ -22,6 +22,6 @@ import { User } from '../../database/entities/user.entity';
       useClass: UserTypeOrmRepository,
     },
   ],
-  exports: [USER_REPOSITORY], 
+  exports: [USER_REPOSITORY],
 })
 export class UsersModule {}

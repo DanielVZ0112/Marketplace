@@ -7,6 +7,7 @@ import { CreateOrderDto } from './application/dto/create-order.dto';
 import { UpdateOrderDto } from './application/dto/update-order.dto';
 import { HttpResponse } from '../../common/http/http-response';
 import { Public } from '../auth/infrastructure/decorators/public.decorator';
+import { CurrentUser } from '../auth/infrastructure/decorators/current-user.decorator';
 
 @Controller('orders')
 export class OrdersController {
@@ -25,8 +26,9 @@ export class OrdersController {
   }
 
   @Get()
-  async findAll() {
-    const orders = await this.listOrdersUseCase.execute();
+  async findAll(@CurrentUser() user?: any) {
+    const userId = user?.id ? Number(user.id) : undefined;
+    const orders = await this.listOrdersUseCase.execute(userId);
     return HttpResponse.ok(orders, 'Órdenes obtenidas exitosamente');
   }
 

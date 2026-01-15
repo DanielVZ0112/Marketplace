@@ -17,6 +17,7 @@ import { BackButton } from "@/shared/components";
 import type { ProductVariant } from "../../domain/ProductVariant";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import noImage from "@/assets/no-image.jpg";
+import { buildProductImageUrl } from "../../infrastructure/imageUrlHelper";
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -29,19 +30,18 @@ export function ProductDetailPage() {
 
   const currentImage = useMemo(() => {
     if (selectedVariant?.image_url || selectedVariant?.imageUrl) {
-      return selectedVariant.image_url || selectedVariant.imageUrl;
+      return buildProductImageUrl(selectedVariant.image_url || selectedVariant.imageUrl);
     }
-    return product?.image_url || product?.imageUrl || null;
+    
+    return buildProductImageUrl(product?.image_url || product?.imageUrl);
   }, [product, selectedVariant]);
 
   const displayPrice = useMemo(() => {
     if (selectedVariant?.price) {
-      // Convertir precio de variante a número
       return typeof selectedVariant.price === 'string'
         ? parseFloat(selectedVariant.price)
         : Number(selectedVariant.price) || 0;
     }
-    // Convertir precio del producto a número
     if (product?.price) {
       return typeof product.price === 'string'
         ? parseFloat(product.price)

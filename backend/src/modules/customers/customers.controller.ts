@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Put, Body, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Body,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateCustomerUseCase } from './application/create-customer.usecase';
 import { ListCustomersUseCase } from './application/list-customers.usecase';
 import { GetCustomerByIdUseCase } from './application/get-customer-by-id.usecase';
@@ -20,7 +28,7 @@ export class CustomersController {
     private readonly getCustomerByUserIdUseCase: GetCustomerByUserIdUseCase,
     private readonly updateCustomerUseCase: UpdateCustomerUseCase,
   ) {}
-  
+
   @Public()
   @Post()
   async create(@Body() customerData: CreateCustomerDto) {
@@ -51,7 +59,10 @@ export class CustomersController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() customerData: UpdateCustomerDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() customerData: UpdateCustomerDto,
+  ) {
     const customer = await this.updateCustomerUseCase.execute(id, customerData);
     return HttpResponse.ok(customer, 'Cliente actualizado exitosamente');
   }

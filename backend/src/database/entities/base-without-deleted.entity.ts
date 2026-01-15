@@ -14,4 +14,3 @@ export abstract class BaseWithoutDeletedEntity {
   @UpdateDateColumn()
   updated_at: Date;
 }
-

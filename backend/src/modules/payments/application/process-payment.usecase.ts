@@ -37,9 +37,13 @@ export class ProcessPaymentUseCase {
     await queryRunner.startTransaction();
 
     try {
-      const payment = await this.paymentRepository.findById(processPaymentData.payment_id);
+      const payment = await this.paymentRepository.findById(
+        processPaymentData.payment_id,
+      );
       if (!payment) {
-        throw new NotFoundException(`Pago con ID ${processPaymentData.payment_id} no encontrado`);
+        throw new NotFoundException(
+          `Pago con ID ${processPaymentData.payment_id} no encontrado`,
+        );
       }
 
       if (payment.payment_status !== PaymentStatus.PENDING) {
@@ -48,17 +52,22 @@ export class ProcessPaymentUseCase {
         );
       }
 
-      const order = await this.orderRepository.findById(payment.order_id.toString());
+      const order = await this.orderRepository.findById(
+        payment.order_id.toString(),
+      );
       if (!order) {
-        throw new NotFoundException(`Orden con ID ${payment.order_id} no encontrada`);
+        throw new NotFoundException(
+          `Orden con ID ${payment.order_id} no encontrada`,
+        );
       }
 
       // Simular el procesamiento del pago
-      const paymentSuccess = processPaymentData.simulate_success !== false; 
+      const paymentSuccess = processPaymentData.simulate_success !== false;
 
       if (paymentSuccess) {
         payment.payment_status = PaymentStatus.COMPLETED;
-        payment.transaction_id = payment.transaction_id || `TXN-${Date.now()}-${payment.id}`;
+        payment.transaction_id =
+          payment.transaction_id || `TXN-${Date.now()}-${payment.id}`;
         payment.metadata = {
           ...payment.metadata,
           processed_at: new Date().toISOString(),
@@ -94,9 +103,13 @@ export class ProcessPaymentUseCase {
 
         await queryRunner.commitTransaction();
 
-        const updatedPayment = await this.paymentRepository.findById(processPaymentData.payment_id);
+        const updatedPayment = await this.paymentRepository.findById(
+          processPaymentData.payment_id,
+        );
         if (!updatedPayment) {
-          throw new InternalServerErrorException('Error al recuperar el pago procesado');
+          throw new InternalServerErrorException(
+            'Error al recuperar el pago procesado',
+          );
         }
 
         return updatedPayment;
@@ -116,9 +129,13 @@ export class ProcessPaymentUseCase {
 
         await queryRunner.commitTransaction();
 
-        const updatedPayment = await this.paymentRepository.findById(processPaymentData.payment_id);
+        const updatedPayment = await this.paymentRepository.findById(
+          processPaymentData.payment_id,
+        );
         if (!updatedPayment) {
-          throw new InternalServerErrorException('Error al recuperar el pago procesado');
+          throw new InternalServerErrorException(
+            'Error al recuperar el pago procesado',
+          );
         }
 
         return updatedPayment;
@@ -137,4 +154,3 @@ export class ProcessPaymentUseCase {
     }
   }
 }
-

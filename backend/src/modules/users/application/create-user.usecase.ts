@@ -1,4 +1,9 @@
-import { Injectable, Inject, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { UserRepository } from '../domain/user.repository';
 import { USER_REPOSITORY } from '../domain/user.repository';
 import { User } from '../../../database/entities/user.entity';
@@ -14,7 +19,9 @@ export class CreateUserUseCase {
 
   async execute(userData: CreateUserDto): Promise<User> {
     try {
-      const existingUser = await this.userRepository.findByEmail(userData.email);
+      const existingUser = await this.userRepository.findByEmail(
+        userData.email,
+      );
       if (existingUser) {
         throw new ConflictException('El email ya está registrado');
       }

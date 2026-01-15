@@ -1,4 +1,9 @@
-import { Injectable, Inject, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { PaymentRepository } from '../domain/payment.repository';
 import { PAYMENT_REPOSITORY } from '../domain/payment.repository';
 import type { OrderRepository } from '../../orders/domain/order.repository';
@@ -18,9 +23,13 @@ export class CreatePaymentUseCase {
 
   async execute(paymentData: CreatePaymentDto): Promise<Payment> {
     try {
-      const order = await this.orderRepository.findById(paymentData.order_id.toString());
+      const order = await this.orderRepository.findById(
+        paymentData.order_id.toString(),
+      );
       if (!order) {
-        throw new BadRequestException(`Orden con ID ${paymentData.order_id} no encontrada`);
+        throw new BadRequestException(
+          `Orden con ID ${paymentData.order_id} no encontrada`,
+        );
       }
 
       if (order.status === 'completed') {
@@ -43,4 +52,3 @@ export class CreatePaymentUseCase {
     }
   }
 }
-

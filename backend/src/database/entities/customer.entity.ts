@@ -42,5 +42,3 @@ export class Customer extends BaseEntity {
   @OneToMany(() => Order, (order) => order.customer)
   orders: Order[];
 }
-
-

@@ -9,8 +9,7 @@ export class ProductMapper {
     product.price = dto.price;
     product.category_id = dto.category_id;
     product.is_active = dto.is_active ?? true;
-    
+
     return product;
   }
 }
-

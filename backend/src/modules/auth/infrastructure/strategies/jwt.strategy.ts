@@ -27,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JwtPayload) {
     const user = await this.userRepository.findById(payload.sub.toString());
-    
+
     if (!user || !user.is_active) {
       throw new UnauthorizedException('Usuario no encontrado o inactivo');
     }
@@ -35,4 +35,3 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return { userId: user.id, email: user.email };
   }
 }
-

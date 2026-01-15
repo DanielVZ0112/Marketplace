@@ -9,4 +9,3 @@ export class ProcessPaymentDto {
   @IsOptional()
   simulate_success?: boolean;
 }
-

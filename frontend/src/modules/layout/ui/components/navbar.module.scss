@@ -1,4 +1,5 @@
 @use '@/shared/styles/tokens' as *;
+@use '@/shared/styles/typography' as *;
 
 .navbar {
   background: #F5F5F5;
@@ -19,62 +20,93 @@
   }
   
   &__logo {
-    font-size: 24px;
-    font-weight: 600;
+    font-family: $font-family;
+    font-size: 28px;
+    font-weight: 700;
     color: $color-black;
     cursor: pointer;
     display: inline-flex;
-    align-items: center;
+    align-items: baseline;
+    gap: 0;
     position: relative;
     white-space: nowrap;
+    letter-spacing: -0.5px;
   }
   
-  &__logoShort {
+  &__logoLetter {
     display: inline-block;
-    transition: max-width $transition-slow cubic-bezier(0.4, 0, 0.2, 1), 
-                opacity $transition-base ease,
-                transform $transition-slow cubic-bezier(0.4, 0, 0.2, 1),
-                margin-right $transition-base ease;
-    max-width: 50px;
-    opacity: 1;
-    overflow: hidden;
-    white-space: nowrap;
-    margin-right: $spacing-xs !important;
-    transform: translateX(0);
-    vertical-align: baseline;
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, $color-primary 0%, #1E40AF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    transition: all $transition-slow cubic-bezier(0.4, 0, 0.2, 1);
+    margin-right: 0;
+    
+    &:first-child {
+      margin-right: 2px;
+    }
+    
+    &:nth-child(9) {
+      margin-left: 2px;
+      margin-right: 2px;
+    }
   }
   
-  &__logoFull {
-    display: inline-block;
+  &__logoLetterExpand {
     max-width: 0;
     opacity: 0;
     overflow: hidden;
+    transform: translateX(-15px);
+    transition: 
+      max-width $transition-slow cubic-bezier(0.4, 0, 0.2, 1),
+      opacity $transition-base ease,
+      transform $transition-slow cubic-bezier(0.4, 0, 0.2, 1);
+    margin-right: 0;
+    color: $color-black;
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: $color-black;
+    background-clip: unset;
+    font-weight: 600;
+    font-size: 28px;
+    display: inline-block;
     white-space: nowrap;
-    transition: max-width $transition-slow cubic-bezier(0.4, 0, 0.2, 1), 
-                opacity $transition-base ease,
-                transform $transition-slow cubic-bezier(0.4, 0, 0.2, 1),
-                margin-right $transition-base ease;
-    margin-right: $spacing-xs !important;
-    transform: translateX(-10px);
-    vertical-align: baseline;
   }
   
   &__logoText {
     display: inline-block;
-    vertical-align: baseline;
+    font-weight: 400;
+    color: $color-text-secondary;
+    margin-left: $spacing-xs;
+    transition: color $transition-base ease;
   }
   
-  &__logo:hover &__logoShort {
-    max-width: 0;
-    opacity: 0;
-    margin-right: 0 !important;
-    transform: translateX(-10px);
-  }
-  
-  &__logo:hover &__logoFull {
-    max-width: 180px;
+  &__logo:hover &__logoLetterExpand {
+    max-width: 25px;
     opacity: 1;
     transform: translateX(0);
+    margin-right: 0;
+    
+    &:nth-child(2) { transition-delay: 0ms; }
+    &:nth-child(3) { transition-delay: 50ms; }
+    &:nth-child(4) { transition-delay: 100ms; }
+    &:nth-child(5) { transition-delay: 150ms; }
+    &:nth-child(6) { transition-delay: 200ms; }
+    &:nth-child(7) { transition-delay: 250ms; }
+    &:nth-child(8) { transition-delay: 300ms; }
+    &:nth-child(9) { transition-delay: 350ms; }
+    &:nth-child(10) { transition-delay: 400ms; }
+    &:nth-child(11) { transition-delay: 450ms; }
+    &:nth-child(12) { transition-delay: 500ms; }
+    &:nth-child(13) { transition-delay: 550ms; }
+  }
+  
+  &__logo:hover &__logoText {
+    color: $color-black;
+    transition-delay: 600ms;
   }
   
   &__actions {

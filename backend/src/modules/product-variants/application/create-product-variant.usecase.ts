@@ -1,4 +1,8 @@
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { ProductVariantRepository } from '../domain/product-variant.repository';
 import { PRODUCT_VARIANT_REPOSITORY } from '../domain/product-variant.repository';
 import { ProductVariant } from '../../../database/entities/product-variant.entity';
@@ -16,8 +20,10 @@ export class CreateProductVariantUseCase {
     try {
       const variant = ProductVariantMapper.toEntity(variantData);
       return await this.productVariantRepository.create(variant);
-    } catch (error) {
-      throw new InternalServerErrorException('Error al crear la variante del producto');
+    } catch {
+      throw new InternalServerErrorException(
+        'Error al crear la variante del producto',
+      );
     }
   }
 }

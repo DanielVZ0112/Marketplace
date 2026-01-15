@@ -9,4 +9,3 @@ export class CategoryMapper {
     return category;
   }
 }
-

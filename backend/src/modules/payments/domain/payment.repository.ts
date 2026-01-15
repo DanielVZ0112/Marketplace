@@ -9,4 +9,3 @@ export interface PaymentRepository {
   findByOrderId(orderId: string): Promise<Payment[]>;
   update(id: string, payment: Partial<Payment>): Promise<Payment>;
 }
-

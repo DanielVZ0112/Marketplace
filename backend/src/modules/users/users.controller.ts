@@ -16,7 +16,7 @@ export class UsersController {
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
   ) {}
-  
+
   @Public()
   @Post()
   async create(@Body() userData: CreateUserDto) {

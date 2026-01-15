@@ -1,4 +1,3 @@
 export interface Seeder {
-    run(): Promise<void>;
-  }
-  
+  run(): Promise<void>;
+}

@@ -30,4 +30,3 @@ export class Payment extends BaseWithoutDeletedEntity {
   @JoinColumn({ name: 'order_id' })
   order: Order;
 }
-

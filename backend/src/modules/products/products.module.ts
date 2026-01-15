@@ -24,5 +24,3 @@ import { Product } from '../../database/entities/product.entity';
   ],
 })
 export class ProductsModule {}
-
-

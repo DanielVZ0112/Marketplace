@@ -13,9 +13,15 @@ export class CustomersSeeder implements Seeder {
     const userRepo = this.dataSource.getRepository(User);
 
     // Obtener los usuarios creados
-    const user1 = await userRepo.findOne({ where: { email: 'juan.perez@example.com' } });
-    const user2 = await userRepo.findOne({ where: { email: 'maria.garcia@example.com' } });
-    const user3 = await userRepo.findOne({ where: { email: 'carlos.rodriguez@example.com' } });
+    const user1 = await userRepo.findOne({
+      where: { email: 'juan.perez@example.com' },
+    });
+    const user2 = await userRepo.findOne({
+      where: { email: 'maria.garcia@example.com' },
+    });
+    const user3 = await userRepo.findOne({
+      where: { email: 'carlos.rodriguez@example.com' },
+    });
 
     if (!user1 || !user2 || !user3) {
       throw new Error('Users must be seeded before customers');
@@ -61,7 +67,9 @@ export class CustomersSeeder implements Seeder {
     ];
 
     for (const customerData of customers) {
-      const exists = await customerRepo.findOne({ where: { user_id: customerData.user_id } });
+      const exists = await customerRepo.findOne({
+        where: { user_id: customerData.user_id },
+      });
       if (!exists) {
         await customerRepo.save(customerRepo.create(customerData));
       }
@@ -70,4 +78,3 @@ export class CustomersSeeder implements Seeder {
     console.log('✅ Customers seeded');
   }
 }
-

@@ -44,5 +44,3 @@ export class ProductsController {
     return HttpResponse.ok(product, 'Producto actualizado exitosamente');
   }
 }
-
-

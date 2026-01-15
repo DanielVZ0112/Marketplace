@@ -17,7 +17,7 @@ export class LoginUseCase {
 
   async execute(loginData: LoginDto): Promise<LoginResponse> {
     const user = await this.userRepository.findByEmail(loginData.email);
-    
+
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
@@ -26,8 +26,11 @@ export class LoginUseCase {
       throw new UnauthorizedException('Usuario inactivo');
     }
 
-    const isPasswordValid = await bcrypt.compare(loginData.password, user.password);
-    
+    const isPasswordValid = await bcrypt.compare(
+      loginData.password,
+      user.password,
+    );
+
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
@@ -48,4 +51,3 @@ export class LoginUseCase {
     };
   }
 }
-

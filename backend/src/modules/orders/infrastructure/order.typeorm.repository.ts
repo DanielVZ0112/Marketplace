@@ -22,6 +22,14 @@ export class OrderTypeOrmRepository implements OrderRepository {
     });
   }
 
+  async findByUserId(userId: number): Promise<Order[]> {
+    return await this.typeOrmRepository.find({
+      where: { user_id: userId },
+      relations: ['customer', 'user', 'items', 'items.productVariant'],
+      order: { created_at: 'DESC' },
+    });
+  }
+
   async findById(id: string): Promise<Order | null> {
     return await this.typeOrmRepository.findOne({
       where: { id: Number(id) },
@@ -30,10 +38,7 @@ export class OrderTypeOrmRepository implements OrderRepository {
   }
 
   async update(id: string, order: Partial<Order>): Promise<Order> {
-    await this.typeOrmRepository.update(
-      { id: Number(id) },
-      order,
-    );
+    await this.typeOrmRepository.update({ id: Number(id) }, order);
     const updatedOrder = await this.findById(id);
     if (!updatedOrder) {
       throw new Error('Order not found after update');

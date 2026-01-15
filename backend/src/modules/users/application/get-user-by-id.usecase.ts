@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { UserRepository } from '../domain/user.repository';
 import { USER_REPOSITORY } from '../domain/user.repository';
 import { User } from '../../../database/entities/user.entity';
@@ -13,11 +18,11 @@ export class GetUserByIdUseCase {
   async execute(id: string): Promise<User> {
     try {
       const user = await this.userRepository.findById(id);
-      
+
       if (!user) {
         throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
       }
-      
+
       return user;
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -27,4 +32,3 @@ export class GetUserByIdUseCase {
     }
   }
 }
-

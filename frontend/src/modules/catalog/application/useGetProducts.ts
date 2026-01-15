@@ -7,7 +7,6 @@ import type { PaginatedProducts } from "../domain/ProductFilters";
 import type { Product } from "../domain/Product";
 
 export function useGetProducts() {
-  // Usar selectores individuales para evitar recrear objetos en cada render
   const search = useCatalogFilters((s) => s.search);
   const categoryId = useCatalogFilters((s) => s.categoryId);
   const size = useCatalogFilters((s) => s.size);
@@ -17,7 +16,6 @@ export function useGetProducts() {
   const sortBy = useCatalogFilters((s) => s.sortBy);
   const order = useCatalogFilters((s) => s.order);
 
-  // Memoizar los filtros para la query key y la función
   const filters = useMemo(
     () => ({
       search,
@@ -33,22 +31,29 @@ export function useGetProducts() {
   );
 
   const queryParams = useMemo(
-    () => ({
-      search: filters.search || undefined,
-      category_id: filters.categoryId || undefined,
-      size: filters.size || undefined,
-      color: filters.color || undefined,
-      page: filters.page || undefined,
-      limit: filters.limit || undefined,
-      sortBy: filters.sortBy || undefined,
-      order: filters.order || undefined,
-    }),
+    () => {
+      const params: any = {
+        search: filters.search || undefined,
+        category_id: filters.categoryId || undefined,
+        size: filters.size || undefined,
+        color: filters.color || undefined,
+        page: filters.page || undefined,
+        limit: filters.limit || undefined,
+      };
+      
+      if (filters.sortBy) {
+        params.sortBy = filters.sortBy;
+        params.order = filters.order || "asc";
+      }
+      
+      return params;
+    },
     [filters]
   );
 
   return useQuery<Product[] | PaginatedProducts>({
     queryKey: queryKeys.products.list(filters),
     queryFn: () => CatalogApiRepository.getProducts(queryParams),
-    staleTime: 30 * 1000, // 30 segundos
+    staleTime: 30 * 1000,
   });
 }

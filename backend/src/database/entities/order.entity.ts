@@ -33,5 +33,3 @@ export class Order extends BaseWithoutDeletedEntity {
   @OneToMany(() => Payment, (payment) => payment.order)
   payments: Payment[];
 }
-
-

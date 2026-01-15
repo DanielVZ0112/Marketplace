@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import type { UserRepository } from '../domain/user.repository';
 import { USER_REPOSITORY } from '../domain/user.repository';
@@ -32,4 +37,3 @@ export class UpdateUserUseCase {
     }
   }
 }
-

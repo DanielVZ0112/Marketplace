@@ -1,4 +1,8 @@
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import type { OrderRepository } from '../domain/order.repository';
@@ -24,10 +28,10 @@ export class CreateOrderUseCase {
 
     try {
       const { order, items } = OrderMapper.toEntity(orderData);
-      
+
       const savedOrder = await this.orderRepository.create(order);
-      
-      items.forEach(item => {
+
+      items.forEach((item) => {
         item.order_id = savedOrder.id;
       });
 
@@ -35,18 +39,21 @@ export class CreateOrderUseCase {
 
       await queryRunner.commitTransaction();
 
-      const orderWithItems = await this.orderRepository.findById(savedOrder.id.toString());
-      
+      const orderWithItems = await this.orderRepository.findById(
+        savedOrder.id.toString(),
+      );
+
       if (!orderWithItems) {
-        throw new InternalServerErrorException('Error al recuperar la orden creada');
+        throw new InternalServerErrorException(
+          'Error al recuperar la orden creada',
+        );
       }
 
       return orderWithItems;
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      console.error('Error al crear la orden:', error);
       throw new InternalServerErrorException(
-        error instanceof Error ? error.message : 'Error al crear la orden'
+        error instanceof Error ? error.message : 'Error al crear la orden',
       );
     } finally {
       await queryRunner.release();

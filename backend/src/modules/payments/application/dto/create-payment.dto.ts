@@ -1,4 +1,10 @@
-import { IsNumber, IsNotEmpty, IsString, IsOptional, IsObject } from 'class-validator';
+import {
+  IsNumber,
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsObject,
+} from 'class-validator';
 
 export class CreatePaymentDto {
   @IsNumber()
@@ -25,4 +31,3 @@ export class CreatePaymentDto {
   @IsOptional()
   metadata?: Record<string, any>;
 }
-

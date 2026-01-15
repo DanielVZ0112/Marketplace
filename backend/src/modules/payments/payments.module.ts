@@ -33,4 +33,3 @@ import { ProductVariantsModule } from '../product-variants/product-variants.modu
   exports: [PAYMENT_REPOSITORY],
 })
 export class PaymentsModule {}
-

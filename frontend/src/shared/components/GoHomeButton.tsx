@@ -6,20 +6,10 @@ import HomeIcon from "@mui/icons-material/Home";
 type ButtonProps = ComponentProps<typeof Button>;
 
 interface GoHomeButtonProps extends Omit<ButtonProps, "onClick" | "startIcon"> {
-  label?: string; // Texto del botón, por defecto "Volver al inicio"
-  showIcon?: boolean; // Mostrar icono de home, por defecto true
+  label?: string;
+  showIcon?: boolean;
 }
 
-/**
- * Componente de botón para regresar a la página principal (home)
- * 
- * @example
- * <GoHomeButton />
- * 
- * <GoHomeButton label="Ir al inicio" variant="contained" />
- * 
- * <GoHomeButton showIcon={false} />
- */
 export function GoHomeButton({
   label = "Volver al inicio",
   showIcon = true,

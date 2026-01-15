@@ -30,7 +30,10 @@ export class ProductVariantTypeOrmRepository implements ProductVariantRepository
     });
   }
 
-  async update(id: string, productVariant: Partial<ProductVariant>): Promise<ProductVariant> {
+  async update(
+    id: string,
+    productVariant: Partial<ProductVariant>,
+  ): Promise<ProductVariant> {
     await this.typeOrmRepository.update(
       { id: Number(id), deleted_at: IsNull() },
       productVariant,

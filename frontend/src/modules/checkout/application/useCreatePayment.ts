@@ -13,7 +13,6 @@ export function useCreatePayment() {
     mutationFn: (paymentData: CreatePaymentDto) =>
       CheckoutApiRepository.createPayment(paymentData),
     onSuccess: () => {
-      // Invalidate queries related to orders
       queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
     },
   });

@@ -9,11 +9,11 @@ export class OrderMapper {
       user_id: dto.user_id || undefined,
       status: dto.status,
       total: dto.items.reduce((sum, item) => {
-        return sum + (item.unit_price * item.quantity);
+        return sum + item.unit_price * item.quantity;
       }, 0),
     } as Partial<Order>);
 
-    const items = dto.items.map(itemDto => {
+    const items = dto.items.map((itemDto) => {
       const item = new OrderItem();
       item.product_variant_id = itemDto.product_variant_id;
       item.quantity = itemDto.quantity;
@@ -25,4 +25,3 @@ export class OrderMapper {
     return { order, items };
   }
 }
-

@@ -42,4 +42,3 @@ export class UsersSeeder implements Seeder {
     console.log('✅ Users seeded');
   }
 }
-

@@ -30,5 +30,3 @@ export class Product extends BaseEntity {
   @OneToMany(() => ProductVariant, (variant) => variant.product)
   variants: ProductVariant[];
 }
-
-

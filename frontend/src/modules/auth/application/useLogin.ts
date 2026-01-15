@@ -15,7 +15,6 @@ export function useLogin() {
   return useMutation({
     mutationFn: (loginData: LoginDto) => AuthApiRepository.login(loginData),
     onSuccess: (data) => {
-      // Guardar token en localStorage (ya lo hace axios interceptor, pero también en Zustand)
       localStorage.setItem("token", data.access_token);
       setToken(data.access_token);
       setUser({

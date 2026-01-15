@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Inject,
+} from '@nestjs/common';
 import type { ProductRepository } from '../domain/product.repository';
 import { PRODUCT_REPOSITORY } from '../domain/product.repository';
 import { Product } from '../../../database/entities/product.entity';
@@ -13,12 +17,11 @@ export class CreateProductUseCase {
   ) {}
 
   async execute(productData: CreateProductDto): Promise<Product> {
-    try {	
+    try {
       const product = ProductMapper.toEntity(productData);
       return await this.productRepository.create(product);
-    } catch (error) {
-      throw new InternalServerErrorException('Error al crear el producto');  
+    } catch {
+      throw new InternalServerErrorException('Error al crear el producto');
     }
   }
 }
-

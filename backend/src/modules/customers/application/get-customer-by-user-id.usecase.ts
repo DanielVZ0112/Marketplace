@@ -1,4 +1,8 @@
-import { Injectable, Inject, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import type { CustomerRepository } from '../domain/customer.repository';
 import { CUSTOMER_REPOSITORY } from '../domain/customer.repository';
 import { Customer } from '../../../database/entities/customer.entity';
@@ -14,8 +18,10 @@ export class GetCustomerByUserIdUseCase {
     try {
       const customer = await this.customerRepository.findByUserId(userId);
       return customer;
-    } catch (error) {
-      throw new InternalServerErrorException('Error al obtener el cliente por user_id');
+    } catch {
+      throw new InternalServerErrorException(
+        'Error al obtener el cliente por user_id',
+      );
     }
   }
 }

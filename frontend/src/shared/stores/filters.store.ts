@@ -32,14 +32,14 @@ export const useCatalogFilters = create<CatalogFilters>((set, get) => ({
   page: 1,
   limit: 20,
   sortBy: null,
-  order: "desc",
+  order: "asc",
 
-  setSearch: (search) => set({ search, page: 1 }), // Resetear página al buscar
+  setSearch: (search) => set({ search, page: 1 }),
   setCategoryId: (categoryId) => set({ categoryId, page: 1 }),
   setSize: (size) => set({ size, page: 1 }),
   setColor: (color) => set({ color, page: 1 }),
   setPage: (page) => set({ page }),
-  setLimit: (limit) => set({ limit, page: 1 }), // Resetear página al cambiar límite
+  setLimit: (limit) => set({ limit, page: 1 }),
   setSortBy: (sortBy) => set({ sortBy, page: 1 }),
   setOrder: (order) => set({ order, page: 1 }),
   clearFilters: () =>
@@ -51,10 +51,24 @@ export const useCatalogFilters = create<CatalogFilters>((set, get) => ({
       page: 1,
       limit: 20,
       sortBy: null,
-      order: "desc",
+      order: "asc",
     }),
 
   syncWithUrl: (params: URLSearchParams) => {
+    if (params.toString() === "") {
+      set({
+        search: "",
+        categoryId: null,
+        size: null,
+        color: null,
+        page: 1,
+        limit: 20,
+        sortBy: null,
+        order: "asc",
+      });
+      return;
+    }
+
     const search = params.get("search") || "";
     const categoryId = params.get("category_id");
     const size = params.get("size");
@@ -72,7 +86,7 @@ export const useCatalogFilters = create<CatalogFilters>((set, get) => ({
       page: page ? Number(page) : 1,
       limit: limit ? Number(limit) : 20,
       sortBy: (sortBy as SortBy) || null,
-      order: (order as SortOrder) || "desc",
+      order: (order as SortOrder) || "asc",
     });
   },
 
@@ -87,7 +101,7 @@ export const useCatalogFilters = create<CatalogFilters>((set, get) => ({
     if (state.page > 1) params.set("page", state.page.toString());
     if (state.limit !== 20) params.set("limit", state.limit.toString());
     if (state.sortBy) params.set("sortBy", state.sortBy);
-    if (state.order !== "desc") params.set("order", state.order);
+    if (state.order !== "asc") params.set("order", state.order);
 
     return params;
   },

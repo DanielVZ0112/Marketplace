@@ -9,4 +9,3 @@ export class CreateCategoryDto {
   @IsNotEmpty()
   slug: string;
 }
-

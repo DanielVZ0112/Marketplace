@@ -93,7 +93,7 @@ export function MyOrdersPage() {
               <TableCell>Fecha</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Total</TableCell>
-              <TableCell>Items</TableCell>
+              <TableCell>Cantidad de productos</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -114,7 +114,7 @@ export function MyOrdersPage() {
                   />
                 </TableCell>
                 <TableCell>${Number(order.total).toFixed(2)}</TableCell>
-                <TableCell>{order.items?.length || 0} items</TableCell>
+                <TableCell>{order.items?.length || 0} productos</TableCell>
                 <TableCell>
                   <Button
                     size="small"

@@ -20,26 +20,44 @@ export class ProductVariantsController {
   @Post()
   async create(@Body() variantData: CreateProductVariantDto) {
     const variant = await this.createProductVariantUseCase.execute(variantData);
-    return HttpResponse.created(variant, 'Variante de producto creada exitosamente');
+    return HttpResponse.created(
+      variant,
+      'Variante de producto creada exitosamente',
+    );
   }
 
   @Public()
   @Get()
   async findAll() {
     const variants = await this.listProductVariantsUseCase.execute();
-    return HttpResponse.ok(variants, 'Variantes de productos obtenidas exitosamente');
+    return HttpResponse.ok(
+      variants,
+      'Variantes de productos obtenidas exitosamente',
+    );
   }
 
   @Public()
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const variant = await this.getProductVariantByIdUseCase.execute(id);
-    return HttpResponse.ok(variant, 'Variante de producto obtenida exitosamente');
+    return HttpResponse.ok(
+      variant,
+      'Variante de producto obtenida exitosamente',
+    );
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() variantData: UpdateProductVariantDto) {
-    const variant = await this.updateProductVariantUseCase.execute(id, variantData);
-    return HttpResponse.ok(variant, 'Variante de producto actualizada exitosamente');
+  async update(
+    @Param('id') id: string,
+    @Body() variantData: UpdateProductVariantDto,
+  ) {
+    const variant = await this.updateProductVariantUseCase.execute(
+      id,
+      variantData,
+    );
+    return HttpResponse.ok(
+      variant,
+      'Variante de producto actualizada exitosamente',
+    );
   }
 }

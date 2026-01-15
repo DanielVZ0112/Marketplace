@@ -1,20 +1,22 @@
-# Marketplace Backend API
+# 🚀 Marketplace Backend API
 
-API REST desarrollada con NestJS para el sistema de Marketplace. Permite a los usuarios explorar productos, seleccionarlos y realizar compras de forma sencilla y segura.
+API REST desarrollada con NestJS y PostgreSQL para el sistema de Marketplace. Proporciona endpoints para gestión de productos, autenticación, carrito de compras, checkout y procesamiento de pagos.
 
 ## 🚀 Características
 
 - ✅ **Arquitectura Hexagonal** (Clean Architecture) - Separación clara de responsabilidades
 - ✅ **Autenticación JWT Opcional** - Sistema de autenticación seguro con tokens (login opcional para compras)
 - ✅ **Base de datos PostgreSQL** - Con TypeORM para gestión de entidades
-- ✅ **Validación de datos** - Con class-validator y ValidationPipe global
-- ✅ **Respuestas estandarizadas** - Formato consistente en todas las respuestas
+- ✅ **Validación Robusta** - class-validator + class-transformer con sanitización
+- ✅ **Rate Limiting** - Protección contra abuso (100 req/min global, 5 req/min en login)
+- ✅ **Respuestas Estandarizadas** - Formato consistente en todas las respuestas
 - ✅ **Soft Delete** - Eliminación lógica de registros
 - ✅ **Migraciones y Seeders** - Gestión de esquema y datos iniciales
 - ✅ **Sistema de Pagos** - Con simulación de pasarelas de pago para pruebas
-- ✅ **Actualización automática de inventario** - Al confirmar pagos exitosos
-- ✅ **CORS configurado** - Para integración con frontend
-- ✅ **Manejo global de excepciones** - Respuestas de error consistentes
+- ✅ **Actualización Automática de Inventario** - Al confirmar pagos exitosos
+- ✅ **CORS Configurado** - Para integración con frontend
+- ✅ **Manejo Global de Excepciones** - Respuestas de error consistentes
+- ✅ **Queries Optimizadas** - Uso de relations para evitar N+1
 
 ## 📋 Requisitos
 
@@ -51,7 +53,20 @@ FRONTEND_URL=http://localhost:5173
 
 ## 🗄️ Base de Datos
 
-### Ejecutar migraciones
+### Opción 1: Restaurar Backup (Recomendado)
+
+Si tienes problemas con los seeders, simplemente restaura el backup:
+
+```bash
+# Desde la raíz del proyecto
+psql -U postgres -d marketplace_db -f marketplace-DB.txt
+```
+
+**Nota:** El backup `marketplace-DB.txt` está en la raíz del proyecto.
+
+### Opción 2: Usar Migraciones y Seeders
+
+#### Ejecutar migraciones
 
 ```bash
 # Generar migración
@@ -62,13 +77,18 @@ npm run migration:run
 
 # Revertir última migración
 npm run migration:revert
+
+# Ver estado de migraciones
+npm run migration:show
 ```
 
-### Ejecutar seeders
+#### Ejecutar seeders
 
 ```bash
 npm run seed
 ```
+
+**Nota:** Los seeders crean datos iniciales (usuarios, categorías, productos, variantes).
 
 ## 🏃 Ejecución
 
@@ -186,14 +206,47 @@ Ver detalles en [Flujos de Negocio](./docs/business-flows.md#-flujo-de-pagos)
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **NestJS** - Framework de Node.js
-- **TypeORM** - ORM para TypeScript
-- **PostgreSQL** - Base de datos relacional
-- **JWT** - Autenticación con tokens
-- **Passport** - Estrategias de autenticación
+- **NestJS 11** - Framework de Node.js
+- **TypeORM 0.3** - ORM para TypeScript
+- **PostgreSQL 14+** - Base de datos relacional
+- **JWT (Passport)** - Autenticación con tokens
 - **class-validator** - Validación de DTOs
+- **class-transformer** - Transformación y sanitización
+- **@nestjs/throttler** - Rate limiting
 - **bcrypt** - Hash de contraseñas
+
+## 🔒 Seguridad
+
+### Rate Limiting
+
+- **Global:** 100 requests por minuto
+- **Login:** 5 requests por minuto (protección contra fuerza bruta)
+
+### Validación
+
+- Validación estricta de todos los inputs
+- Sanitización automática (trim, lowercase)
+- Validación de formatos (email, teléfono, etc.)
+
+### Autenticación
+
+- JWT tokens con expiración configurable
+- Passwords hasheados con bcrypt
+- Rutas protegidas con guards
+
+## 📊 Performance
+
+### Optimizaciones
+
+- ✅ Uso de `relations` en TypeORM (evita queries N+1)
+- ✅ Índices en campos de búsqueda frecuente
+- ✅ Soft delete para mantener integridad referencial
+- ✅ Paginación en endpoints de listado
 
 ## 📄 Licencia
 
 Este proyecto es privado y está desarrollado para evaluación técnica.
+
+---
+
+**Nota:** Para más detalles sobre la arquitectura y endpoints, consulta la documentación en `docs/`.

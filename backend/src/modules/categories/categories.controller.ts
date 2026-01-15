@@ -38,7 +38,10 @@ export class CategoriesController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() categoryData: UpdateCategoryDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() categoryData: UpdateCategoryDto,
+  ) {
     const category = await this.updateCategoryUseCase.execute(id, categoryData);
     return HttpResponse.ok(category, 'Categoría actualizada exitosamente');
   }

@@ -5,6 +5,7 @@ import { queryClient } from '../shared/lib/react-query';
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { theme } from "@/shared/lib/theme";
 import { useSessionStore } from "@/shared/stores/session.store";
+import { ErrorBoundary } from "@/shared/components/ErrorBoundary";
 
 function SessionInitializer() {
   const initializeFromStorage = useSessionStore((s) => s.initializeFromStorage);
@@ -19,12 +20,14 @@ function SessionInitializer() {
 
 export function AppProviders({ children }: { children: ReactNode }) {
     return (
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <SessionInitializer />
-          {children}
-        </ThemeProvider>
-      </QueryClientProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <SessionInitializer />
+            {children}
+          </ThemeProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
     );
   }

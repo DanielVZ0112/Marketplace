@@ -11,4 +11,3 @@ export class UserMapper {
     return user;
   }
 }
-
