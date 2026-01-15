@@ -383,8 +383,8 @@ psql -U postgres -d marketplace_db -f marketplace-DB.txt
 Este proyecto es privado y está desarrollado para evaluación técnica.
 
 ## 👤 Autor
-
-Desarrollado como prueba técnica - Enero 2026
+Daniel Felipe Vasco Zapata.
+Desarrollado como prueba técnica - Enero 2026.
 
 ---
 
