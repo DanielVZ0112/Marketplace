@@ -120,39 +120,80 @@ export class NombreMigracion1234567890 implements MigrationInterface {
 
 ### Ejecutar Seeders
 
+Para poblar la base de datos con datos iniciales, ejecuta:
+
 ```bash
 npm run seed
 ```
+
+Este comando ejecutará todos los seeders en el orden correcto, respetando las dependencias entre entidades.
 
 ### Ubicación
 
 Los seeders se encuentran en: `src/database/seeders/`
 
+### Orden de Ejecución
+
+Los seeders se ejecutan en el siguiente orden para respetar las dependencias:
+
+1. **Categorías** (`categories.seed.ts`) - Se ejecuta primero ya que los productos dependen de categorías
+2. **Usuarios** (`users.seed.ts`) - Se ejecuta antes de los clientes
+3. **Clientes** (`customer.seed.ts`) - Depende de usuarios
+4. **Productos** (`products.seed.ts`) - Depende de categorías
+5. **Variantes de Productos** (`product_variants.seed.ts`) - Depende de productos
+
 ### Datos Iniciales
 
 Los seeders crean:
 
-- **Categorías** - Categorías de ejemplo
-- **Productos** - Productos de ejemplo con variantes
-- **Usuarios** - Usuarios de prueba
+- **Categorías** - Categorías de ejemplo (Hombre, Mujer, Accesorios, etc.)
+- **Usuarios** - Usuarios de prueba con credenciales para autenticación
+- **Clientes** - Clientes asociados a usuarios y clientes guest
+- **Productos** - Productos de ejemplo con información completa
+- **Variantes de Productos** - Variantes con diferentes tallas, colores y stock
 
-### Ejemplo de Seeder
+### Estructura de un Seeder
+
+Cada seeder implementa la interfaz `ISeeder` y debe tener un método `run()`:
 
 ```typescript
 import { DataSource } from 'typeorm';
+import { ISeeder } from './seed.interface';
 import { Category } from '../entities/category.entity';
 
-export async function seedCategories(dataSource: DataSource) {
-  const categoryRepository = dataSource.getRepository(Category);
-  
-  const categories = [
-    { name: 'Ropa', slug: 'ropa' },
-    { name: 'Electrónica', slug: 'electronica' },
-  ];
-  
-  await categoryRepository.save(categories);
+export class CategoriesSeeder implements ISeeder {
+  constructor(private dataSource: DataSource) {}
+
+  async run(): Promise<void> {
+    const categoryRepository = this.dataSource.getRepository(Category);
+    
+    const categories = [
+      { name: 'Ropa', slug: 'ropa' },
+      { name: 'Electrónica', slug: 'electronica' },
+    ];
+    
+    await categoryRepository.save(categories);
+    console.log('✅ Categories seeded');
+  }
 }
 ```
+
+### Archivos de Seeders
+
+- `seed.ts` - Archivo principal que orquesta la ejecución de todos los seeders
+- `seed.interface.ts` - Interfaz que deben implementar todos los seeders
+- `run.ts` - Script de ejecución que inicializa la conexión y ejecuta los seeders
+- `categories.seed.ts` - Seeder de categorías
+- `users.seed.ts` - Seeder de usuarios
+- `customer.seed.ts` - Seeder de clientes
+- `products.seed.ts` - Seeder de productos
+- `product_variants.seed.ts` - Seeder de variantes de productos
+
+### Notas Importantes
+
+- Los seeders verifican si los datos ya existen antes de crearlos para evitar duplicados
+- Se pueden ejecutar múltiples veces de forma segura (idempotentes)
+- Asegúrate de tener las migraciones ejecutadas antes de correr los seeders
 
 ## 📋 Entidades Principales
 
