@@ -61,6 +61,13 @@ export function Navbar() {
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {isAuthenticated ? (
               <>
+                <Button
+                  onClick={() => navigate("/erp")}
+                  color="inherit"
+                  aria-label="Abrir el ERP"
+                >
+                  ERP
+                </Button>
                 <Button 
                   onClick={() => navigate("/orders")} 
                   color="inherit"

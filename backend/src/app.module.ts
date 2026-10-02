@@ -11,6 +11,11 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { ProductVariantsModule } from './modules/product-variants/product-variants.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { ErpParametrosModule } from './modules/erp-parametros/erp-parametros.module';
+import { ErpCategoriasModule } from './modules/erp-categorias/erp-categorias.module';
+import { ErpProveedoresModule } from './modules/erp-proveedores/erp-proveedores.module';
+import { ErpInsumosModule } from './modules/erp-insumos/erp-insumos.module';
+import { ErpCotizacionesModule } from './modules/erp-cotizaciones/erp-cotizaciones.module';
 import { JwtAuthGuard } from './modules/auth/infrastructure/guards/jwt-auth.guard';
 
 @Module({
@@ -42,6 +47,11 @@ import { JwtAuthGuard } from './modules/auth/infrastructure/guards/jwt-auth.guar
     ProductVariantsModule,
     PaymentsModule,
     AuthModule,
+    ErpParametrosModule,
+    ErpCategoriasModule,
+    ErpProveedoresModule,
+    ErpInsumosModule,
+    ErpCotizacionesModule,
   ],
   providers: [
     {

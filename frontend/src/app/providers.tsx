@@ -11,7 +11,6 @@ function SessionInitializer() {
   const initializeFromStorage = useSessionStore((s) => s.initializeFromStorage);
   
   useEffect(() => {
-    // Inicializar sesión desde localStorage al cargar la app
     initializeFromStorage();
   }, [initializeFromStorage]);
   

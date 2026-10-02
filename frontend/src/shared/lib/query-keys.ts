@@ -30,4 +30,12 @@ export const queryKeys = {
     customerByUserId: () =>
       [...queryKeys.checkout.all, "customer", "by-user"] as const,
   },
+  erp: {
+    parametros: () => ["erp", "parametros"] as const,
+    categorias: () => ["erp", "categorias"] as const,
+    proveedores: () => ["erp", "proveedores"] as const,
+    insumos: () => ["erp", "insumos"] as const,
+    cotizaciones: () => ["erp", "cotizaciones"] as const,
+    cotizacion: (id: number) => ["erp", "cotizaciones", id] as const,
+  },
 } as const;

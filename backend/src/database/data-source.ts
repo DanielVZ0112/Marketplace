@@ -8,6 +8,14 @@ import { ProductVariant } from './entities/product-variant.entity';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { Payment } from './entities/payment.entity';
+import { ErpParametro } from './entities/erp-parametro.entity';
+import { ErpInsumo } from './entities/erp-insumo.entity';
+import { ErpCategoria } from './entities/erp-categoria.entity';
+import { ErpProveedor } from './entities/erp-proveedor.entity';
+import { ErpCotizacion } from './entities/erp-cotizacion.entity';
+import { ErpCotizacionItem } from './entities/erp-cotizacion-item.entity';
+import { ErpCotizacionItemInsumo } from './entities/erp-cotizacion-item-insumo.entity';
+import { ErpCotizacionTrabajo } from './entities/erp-cotizacion-trabajo.entity';
 
 config();
 
@@ -27,6 +35,14 @@ export const AppDataSource = new DataSource({
     Order,
     OrderItem,
     Payment,
+    ErpParametro,
+    ErpCategoria,
+    ErpProveedor,
+    ErpInsumo,
+    ErpCotizacion,
+    ErpCotizacionItem,
+    ErpCotizacionTrabajo,
+    ErpCotizacionItemInsumo,
   ],
   migrations: ['src/database/migrations/*.ts'],
   synchronize: false,
