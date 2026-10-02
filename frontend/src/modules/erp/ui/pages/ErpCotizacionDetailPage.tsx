@@ -13,17 +13,18 @@ export function ErpCotizacionDetailPage() {
   const cotizacionId = Number(id);
   const cotizacionQuery = useGetCotizacion(cotizacionId);
   const cotizacion = cotizacionQuery.data;
+  const cotizacionComercial = cotizacion ? comercialDesdeCotizacion(cotizacion) : null;
   const [pdfError, setPdfError] = useState("");
   const [pdfPending, setPdfPending] = useState(false);
 
   const descargar = async () => {
-    if (!cotizacion) {
+    if (!cotizacion || !cotizacionComercial) {
       return;
     }
     setPdfError("");
     setPdfPending(true);
     try {
-      await descargarCotizacionPdf(comercialDesdeCotizacion(cotizacion));
+      await descargarCotizacionPdf(cotizacionComercial);
     } catch {
       setPdfError("No se pudo generar el PDF.");
     } finally {
@@ -50,6 +51,12 @@ export function ErpCotizacionDetailPage() {
             <Typography>Cliente: {cotizacion.cliente_nombre}</Typography>
             <Typography>Contacto: {cotizacion.cliente_contacto}</Typography>
             <Typography>Fecha: {cotizacion.fecha}</Typography>
+            <Typography>
+              Subtotal antes del descuento {formatCop(cotizacionComercial?.subtotal_antes_descuento ?? 0)}
+              {cotizacionComercial && cotizacionComercial.descuento > 0
+                ? ` · Descuento aplicado ${formatCop(cotizacionComercial.descuento)}`
+                : ""}
+            </Typography>
             <Typography>
               Costo total de fabricación {formatCop(cotizacion.total_costo)} · Total de venta {formatCop(cotizacion.total_precio)} · Ganancia {formatCop(cotizacion.total_precio - cotizacion.total_costo)}
             </Typography>

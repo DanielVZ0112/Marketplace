@@ -1,9 +1,13 @@
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import logoDej from "../../../../assets/Logo/Logo-DEJ.png";
 import type { CotizacionComercial } from "../../domain/CotizacionComercial";
 import { formatCop } from "../format";
 
 const styles = StyleSheet.create({
   page: { padding: 36, fontSize: 11, fontFamily: "Helvetica", color: "#1a1a1a" },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
+  headerInfo: { maxWidth: "70%" },
+  logo: { width: 100, height: 100, objectFit: "contain" },
   brand: { fontSize: 20, fontFamily: "Helvetica-Bold", marginBottom: 4 },
   muted: { color: "#555", marginBottom: 2 },
   section: { marginTop: 16 },
@@ -13,6 +17,9 @@ const styles = StyleSheet.create({
   colDesc: { width: "46%" },
   colPrice: { width: "21%", textAlign: "right" },
   colSub: { width: "21%", textAlign: "right" },
+  summaryRow: { flexDirection: "row", justifyContent: "flex-end", marginTop: 6 },
+  summaryLabel: { width: "38%", textAlign: "right", marginRight: 12 },
+  summaryValue: { width: "21%", textAlign: "right" },
   total: { marginTop: 12, fontSize: 14, fontFamily: "Helvetica-Bold", textAlign: "right" },
   note: { marginTop: 6 },
 });
@@ -33,11 +40,16 @@ export function CotizacionComercialDocument({ data }: { data: CotizacionComercia
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <Text style={styles.brand}>D-E-J Creaciones</Text>
-        <Text style={styles.muted}>Cotización comercial</Text>
-        <Text style={styles.muted}>Fecha: {fechaLegible(data.fecha)}</Text>
-        <Text style={styles.muted}>Válida hasta: {sumarDias(data.fecha, 7)}</Text>
-        {data.numero ? <Text style={styles.muted}>Cotización #{data.numero}</Text> : null}
+        <View style={styles.header}>
+          <View style={styles.headerInfo}>
+            <Text style={styles.brand}>D-E-J Creaciones</Text>
+            <Text style={styles.muted}>Cotización comercial</Text>
+            <Text style={styles.muted}>Fecha: {fechaLegible(data.fecha)}</Text>
+            <Text style={styles.muted}>Válida hasta: {sumarDias(data.fecha, 7)}</Text>
+            {data.numero ? <Text style={styles.muted}>Cotización #{data.numero}</Text> : null}
+          </View>
+          <Image src={logoDej} style={styles.logo} />
+        </View>
 
         <View style={styles.section}>
           <Text>Cliente: {data.cliente_nombre}</Text>
@@ -59,16 +71,34 @@ export function CotizacionComercialDocument({ data }: { data: CotizacionComercia
               <Text style={styles.colSub}>{formatCop(linea.subtotal)}</Text>
             </View>
           ))}
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Subtotal antes del descuento</Text>
+            <Text style={styles.summaryValue}>{formatCop(data.subtotal_antes_descuento)}</Text>
+          </View>
+          {data.descuento > 0 && (
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Descuento aplicado</Text>
+              <Text style={styles.summaryValue}>-{formatCop(data.descuento)}</Text>
+            </View>
+          )}
           <Text style={styles.total}>Total a pagar {formatCop(data.total)}</Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.note}>
-            Formas de pago: Nequi, Bancolombia o transferencia. Los datos de la cuenta se
-            confirman al aprobar el pedido.
+            Medios de pago: Nequi 3128782491, a nombre de Daniel Vasco. Bancolombia,
+            cuenta de ahorros 61465160488.
+          </Text>
+          <Text style={styles.note}>
+            Comparte el comprobante de pago por WhatsApp al 3128782491.
           </Text>
           <Text style={styles.note}>
             Entrega: la fecha y el lugar se acuerdan después de la aprobación.
+          </Text>
+          <Text style={styles.note}>
+            Para iniciar el trabajo se debe depositar mínimo el 50% del valor de la cotización:
+            {" "}
+            {formatCop(data.total * 0.5)}.
           </Text>
           <Text style={styles.note}>
             Condiciones: esta oferta vence a los 7 días. Cambios de diseño posteriores a la

@@ -50,6 +50,7 @@ export interface CotizacionItemResultado {
 }
 
 export interface TrabajoResultado {
+  margen_esperado: number;
   costo_diseno: number;
   precio_diseno: number;
   items: CotizacionItemResultado[];

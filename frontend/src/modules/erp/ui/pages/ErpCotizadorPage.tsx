@@ -167,17 +167,18 @@ function CotizadorFormulario({ cotizacion }: { cotizacion?: CotizacionErp }) {
   };
 
   const resultado = calcular.data;
+  const vistaPreviaComercial = resultado
+    ? comercialDesdeCalculo(clienteNombre.trim(), clienteContacto.trim(), resultado)
+    : null;
 
   const onDescargarPdf = async () => {
-    if (!resultado || !clienteNombre.trim()) {
+    if (!vistaPreviaComercial || !clienteNombre.trim()) {
       return;
     }
     setPdfError("");
     setPdfPending(true);
     try {
-      await descargarCotizacionPdf(
-        comercialDesdeCalculo(clienteNombre.trim(), clienteContacto.trim(), resultado),
-      );
+      await descargarCotizacionPdf(vistaPreviaComercial);
     } catch {
       setPdfError("No se pudo generar el PDF.");
     } finally {
@@ -325,10 +326,21 @@ function CotizadorFormulario({ cotizacion }: { cotizacion?: CotizacionErp }) {
             </TableBody>
           </Table>
           <Typography sx={{ mt: 2 }}>
-            Costo total de fabricación {formatCop(resultado.total_costo)} · Total de venta {formatCop(resultado.total_precio)} · Ganancia {formatCop(resultado.ganancia_total)}
+            Subtotal antes del descuento {formatCop(vistaPreviaComercial?.subtotal_antes_descuento ?? 0)}
+          </Typography>
+          {vistaPreviaComercial && vistaPreviaComercial.descuento > 0 && (
+            <Typography color="success.main">
+              Descuento aplicado {formatCop(vistaPreviaComercial.descuento)}
+            </Typography>
+          )}
+          <Typography variant="subtitle1" fontWeight={700}>
+            Total de venta {formatCop(resultado.total_precio)}
           </Typography>
           <Typography variant="caption" color="text.secondary" display="block">
-            El descuento por mayor baja el precio de venta. La ganancia es el total de venta menos el costo total.
+            Costo total de fabricación {formatCop(resultado.total_costo)} · Ganancia {formatCop(resultado.ganancia_total)}
+          </Typography>
+          <Typography variant="caption" color="text.secondary" display="block">
+            El total de venta ya incluye el descuento aplicado.
           </Typography>
         </Paper>
       )}

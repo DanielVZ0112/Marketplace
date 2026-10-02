@@ -141,6 +141,7 @@ function mapItemEditable(raw: RawItem): CotizacionItemEditable {
 
 function mapTrabajoResultado(raw: RawTrabajo): TrabajoResultado {
   return {
+    margen_esperado: Number(raw.margen_esperado),
     costo_diseno: money(raw.costo_diseno),
     precio_diseno: money(raw.precio_diseno),
     items: raw.items.map(mapItem),
